@@ -1,0 +1,121 @@
+\documentclass[11pt]{article}
+\usepackage{nsfproposal}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\hypersetup{citecolor=blue,linkcolor=blue}
+%\usepackage[square,comma,numbers,sort&compress]{natbib}
+
+\usepackage{times,mathptmx,inconsolata}
+\usepackage{fullpage}
+\usepackage{xspace}
+\usepackage{listings}
+\usepackage[margin=1in,letterpaper,pass]{geometry}
+\usepackage[labelfont=bf]{caption}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{fancyvrb,verbatim}
+\usepackage{booktabs}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[compact, small]{titlesec}
+\usepackage{balance}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+
+\input{cmds}
+
+% BibLaTeX for bibliography
+\usepackage[
+  backend=biber,
+  style=numeric-comp,
+  minalphanames=3,
+  isbn=false,
+  sortcites=true,
+  sorting=anyt,
+  abbreviate=false,
+  url=false,
+  doi=false,
+  maxnames=99,
+  minbibnames=3,
+  maxbibnames=99]{biblatex}
+
+\addbibresource{local.bib}
+\addbibresource{schwarzkopf.bib}
+
+% TiKZ graphics
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{trees}
+\usetikzlibrary{positioning}
+\usetikzlibrary{arrows}
+\usetikzlibrary{shapes.arrows}
+\usetikzlibrary{decorations.pathreplacing, decorations.pathmorphing}
+
+%% CFP: https://www.nsf.gov/pubs/2017/nsf17537/nsf17537.htm
+
+\newcommand{\proptitle}{Privacy-Preserving Advertising for the Web}
+\newcommand{\authoraffil}{Anna Lysanskaya and Malte Schwarzkopf, Computer Science Department, Brown University}
+
+\begin{document}
+
+\pagestyle{plain}
+
+\begin{submit}{B}{submit-summary}
+\input{summary}
+\end{submit}
+
+%tweak to fit in more text
+%\fontfamily{\rmdefault}\fontsize{12}{16}\selectfont
+
+\begin{submit}{D}{submit-description}
+
+\section*{SaTC CORE: \proptitle{}}
+{\em\authoraffil}
+\medskip
+
+\input{intro}
+%\input{bg}
+%\input{research}
+%\input{results}
+%\input{education}
+%\input{work}
+\input{prior}
+
+\end{submit}
+
+%\begin{submit}{J}{submit-personnel}
+%\input{personnel}
+%\end{submit}
+
+\begin{submit}{J}{submit-datamgmt}
+\input{datamgmt}
+\end{submit}
+
+%\begin{submit}{J}{submit-postdoc}
+%\input{postdoc}
+%\end{submit}
+
+%\begin{submit}{J}{submit-conflicts}
+%\input{conflicts}
+%\end{submit}
+
+%\begin{submit}{J}{submit-collaboration}
+%\input{collaboration}
+%\end{submit}
+
+\begin{submit}{E}{submit-references}
+{
+
+%\renewcommand{\refname}{\hbox to0pt{E\hss}\phantom{0}\quad References Cited}
+\renewcommand{\refname}{{E}\quad References Cited}
+\raggedright
+% TWO-PAGE LIMIT ON REFERENCES
+%\bibliographystyle{abbrv}
+%\setlength{\bibsep}{0pt}
+%\bibliography{local}
+\printbibliography
+
+}
+\end{submit}
+
+\end{document}

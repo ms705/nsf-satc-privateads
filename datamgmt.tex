@@ -1,0 +1,112 @@
+\section*{Data Management Plan}
+
+% Plans for data management and sharing of the products of
+% research. Proposals must include a supplementary document of no more
+% than two pages labeled “Data Management Plan”. This supplement should
+% describe how the proposal will conform to NSF policy on the dissemination
+% and sharing of research results (see AAG Chapter VI.D.4), and may include:
+%
+% - the types of data, samples, physical collections, software,
+%   curriculum materials, and other materials to be produced in the course
+%   of the project;
+%
+% - the standards to be used for data and metadata format and content
+%   (where existing standards are absent or deemed inadequate, this should
+%   be documented along with any proposed solutions or remedies);
+%
+% - policies for access and sharing including provisions for appropriate
+%   protection of privacy, confidentiality, security, intellectual property,
+%   or other rights or requirements;
+%
+% - policies and provisions for re-use, re-distribution, and the
+%   production of derivatives; and
+%
+% - plans for archiving data, samples, and other research products,
+%   and for preservation of access to them.
+
+%\todo{go over Xi's version}
+
+%
+The goal of this project is to explore systems techniques for constructing web
+services that are privacy-compliant by construction.
+%
+As part of this effort, we plan to build working prototypes of web services and
+the systems that back them, including a new database, a blob store, and modified
+RPC libraries as well as plugins for existing systems (\eg ML frameworks).
+%
+All source code, configuration files, and instructions for reproducing published
+measurements of our systems will be made public, hosted via GitHub version
+control and accessible from the project website at Brown University.
+%
+The data generated through the work described in this proposal will consist of
+papers, source code,  benchmarks, and experimental results.
+%
+
+%
+The PI brings extensive experience with building and contributing to open-source
+software.
+%
+Prior systems of his have become popular open-source projects (\eg the Noria
+dataflow system, which has 21 contributors, 102 pull requests, and 2,600 stars
+on GitHub), or have been integrated with popular open-source software (\eg the
+Firmament cluster scheduler, for which an open-source community developed a
+plugin for Google's Kubernetes cluster manager).
+%
+All of this software is available for public access on GitHub.
+%
+
+\paragraph{Policies for Data Access and Sharing.}
+We will make the source code for our new dataflow systems, the federated
+database, the RPC library patches and inter-system dataflow tracking, and
+the tools for specifying, enforcing, and checking user-specific privacy
+policies, available for public download under open-source licenses.
+%
+To ensure broad impact of our work, the source code will be available for reuse
+without restriction.
+%
+
+\paragraph{Reproducibility of Experimental Results}
+%
+We will publish our results in peer-reviewed systems venues such as SOSP and
+OSDI, or database venues such as SIGMOD and VLDB.
+%
+When a venue has a pre-publiction artifact evaluation process, we will
+participate and support third-party reproduction of our results.
+%
+
+\paragraph{Data Formats.}
+All data generated will be labeled and stored in digital formats, and we will
+ensure that any empirical data produced in our experiments and our source code
+distributions use standard formats.
+%
+For papers, we will keep both a PDF copy of the document and the {\LaTeX}
+source.
+%
+Experimental results will be stored in standard formats compatible with
+widely-used software tools, such as spreadsheets or ASCII text files.
+%
+We will also include sufficient documentation with our released code and data
+to allow third parties to reconstruct our published results.
+%
+
+\paragraph{Data Retention.}
+Data will be retained for at least three years beyond the award period, as
+required by NSF guidelines.
+%
+The GitHub version control repositories will ensure the integrity of data and
+allow for long-term retention.
+%
+
+\paragraph{Data Privacy.}
+This research project does not involve confidential data or source code.
+
+%\paragraph{Responsible data management.}
+%All members of the investigative team with data access will be
+%instructed and certified in responsible research and scholarship
+%(e.g., via the Responsible Conduct of Research
+%course provided by the MIT Office of Sponsored Projects).  All data
+%acquired and preserved in the context of this proposal will be further
+%governed by the policies of the Massachusetts Institute of Technology
+%pertaining to intellectual property, record
+%retention, and data management.
+
