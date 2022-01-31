@@ -1,0 +1,49 @@
+\section{Research}
+\label{r:stuff}
+
+\subsection{Preventing click fraud}
+
+\subsubsection{What we can do based on existing cryptographic algorithms}
+What works currently. %Malte
+
+Explanation of what we propose will happen. %Malte writes up our whiteboard design.
+
+Can use off-the-shelf anonymous credentials light, but they are not concurrently secure. %Anna
+
+Or can use concurrently secure blind sigs, but trust the user to encode the right stuff. %Anna
+
+Can use off-the-shelf heavy-weight anonymous credentials, but they are not as fast as we'd like, and have some features that are not necessary for this application. %Anna
+
+How all this integrates and gives us something new and cool. %Malte
+
+\subsubsection{Crypto open problems}
+%Anna
+
+Two big problems: performance and being able to support attributes in a concurrently secure fashion.  Using known techniques can achieve one or the other (the former under not-so-great cryptographic assumptions).
+
+Make ACL concurrently secure.  AKA Concurrent blind signatures with attributes more efficiently.
+
+Take an existing concurrently secure blind sig, for example blind RSA, and explore adding attributes.  
+
+Delegation of blind sig issuance capability.
+
+Post-quantum.
+
+\subsubsection{Systems open problems}
+% Malte
+How to scale using CDNs -- can't just give Akamai your cryptographic keys, need to certify each Akamai server involved. Also dealing with the more expensive crypto operations as part of being a platform/publisher.  Don't want to be orders of magnitude more expensive than today.
+
+On the user side: makes sure that the user's browser is following the correct protocol.
+
+Backwards-compatibility.  Ad delivery should work using existing mechanisms, so no need for a new way to display ads in the browser.
+Convey the crypto information in addition to the actual ad, in a way that would work on existing browsers, and without cookies, or at least without identifying cookies.
+
+
+
+\subsection{Targeting/bidding}
+
+this part is significantly harder.  Assumptions about user interest categories.  
+
+Validation schemes between publisher, platform and user.  Publisher tries to match ads to user interests.  Platform verifies (for a small sample of users) the interests as presented by the publisher against the user's browser history, and has a way to score whether the publisher is good at matching users with ads.  (Possibly on a per-campaign basis.)
+
+Calculating the conversion rate: how many people clicked on the ad, and also how many then proceeded to buy.  
