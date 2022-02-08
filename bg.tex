@@ -55,9 +55,67 @@ their users with the platform, and the platform chooses ads to show to the
 users from their inventory of advertiser-provided ads.
 %
 
+\begin{itemize}
+  \item RTB (real-time bidding)
+  \item Need high-fidelity information about user interests
+  \item Cross-site trackers, reference Apple privacy change impact
+  \item Google FLOC?
+\end{itemize}
 
 \subsection{Click Fraud}
 
+%
+Advertising involves money changing hands, and thus provides incentives for
+fraud.
+%
+In the online ad ecosystem's threat model, individual parties seek to maximize
+their own revenue or minimize their costs.
+%
+Collusion between parties can happen (\eg a publisher may create sybil end
+users), and is common.
+%
+
+%
+The most important challenge is \textbf{click fraud}, which describes the idea
+of creating fake ad impressions and engagements in order to extract revenue from
+an advertiser.
+%
+In particular, a publisher gains financially from showing more ads and from
+showing higher-value ads.
+%
+Consequently, they might generate fake traffic via sybil users (e.g., ``click
+farms''~\cite{xxx}), or misrepresent the real users' interest towards the
+platform in order to get given more valuable ads in RTB.
+%
+\todo{Malte/Anna to insert more detail from FB document.}
+%
+
+%
+The easiest way to combat click fraud is for the platform to identify users,
+collect their information, and monitor their behavior at scale.
+%
+Knowing more about the user make sybils expensive to create and maintain, but is
+of course diametrically opposed to the users' justified desire for online
+privacy.
+%
+
 \subsection{A better approach: Privacy-First Advertising}
 
+%
+In this research, we plan to develop an alternative to today's privacy-invasive
+advertising ecosystem.
+%
+Our starting point is simple: we seek the reduce the information exchanged
+between the parties in the ad ecosystem to \emph{the minimum information
+necessary for successful ad targeting and for the parties to trust each other}
+that they have executed their part of the protocol faithfully and correctly.
+%
+
+%
+Our approach draws on cryptographic tools (\S\ref{s:bg-crypto}) and some minor
+changes to sofware, particular end-user browsers.
+
 \subsection{Blind Signatures and Anonymous Credentials}
+\label{s:bg-crypto}
+
+\todo{Anna to fill in some background.}
