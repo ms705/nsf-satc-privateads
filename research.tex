@@ -1,7 +1,17 @@
 \section{Research}
 \label{r:stuff}
 
+%
+We plan to tackle the problem of privacy-first advertising in two broad steps:
+first, we establish the primitives needed to achieve trust between parties in
+the ad ecosystem to avoid click fraud without requiring privaxy-invasive data
+collection (\S\ref{r:fraud}), and then we address the ad matching process and
+hide users' interests and behavior from the other parties in the ecosystem
+(\S\ref{r:matching}).
+%
+
 \subsection{Preventing click fraud}
+\label{r:fraud}
 
 \subsubsection{What we can do based on existing cryptographic algorithms}
 What works currently. %Malte
@@ -23,7 +33,7 @@ Two big problems: performance and being able to support attributes in a concurre
 
 Make ACL concurrently secure.  AKA Concurrent blind signatures with attributes more efficiently.
 
-Take an existing concurrently secure blind sig, for example blind RSA, and explore adding attributes.  
+Take an existing concurrently secure blind sig, for example blind RSA, and explore adding attributes.
 
 Delegation of blind sig issuance capability.
 
@@ -41,9 +51,10 @@ Convey the crypto information in addition to the actual ad, in a way that would 
 
 
 \subsection{Targeting/bidding}
+\label{r:matching}
 
-this part is significantly harder.  Assumptions about user interest categories.  
+this part is significantly harder.  Assumptions about user interest categories.
 
 Validation schemes between publisher, platform and user.  Publisher tries to match ads to user interests.  Platform verifies (for a small sample of users) the interests as presented by the publisher against the user's browser history, and has a way to score whether the publisher is good at matching users with ads.  (Possibly on a per-campaign basis.)
 
-Calculating the conversion rate: how many people clicked on the ad, and also how many then proceeded to buy.  
+Calculating the conversion rate: how many people clicked on the ad, and also how many then proceeded to buy.
