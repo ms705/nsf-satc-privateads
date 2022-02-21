@@ -84,8 +84,8 @@ In particular, a publisher gains financially from showing more ads and from
 showing higher-value ads.
 %
 Consequently, they might generate fake traffic via sybil users (e.g., ``click
-farms''~\cite{xxx}), or misrepresent the real users' interest towards the
-platform in order to get given more valuable ads in RTB.
+farms''~\cite{understanding-ad-fraud}), or misrepresent the real users' interest
+towards the platform in order to get given more valuable ads in RTB.
 %
 \todo{Malte/Anna to insert more detail from FB document.}
 %
@@ -97,6 +97,59 @@ collect their information, and monitor their behavior at scale.
 Knowing more about the user make sybils expensive to create and maintain, but is
 of course diametrically opposed to the users' justified desire for online
 privacy.
+%
+
+\subsection{Related Work}
+\label{s:bg-related}
+
+\paragraph{End-user privacy \vs the platform.}
+%
+PrivAd~\cite{privad} introduces an untrusted, anonymizing proxy between the
+client and the platform.
+%
+Has some click fraud detection; mixes requests from different clients for user
+anonymity.
+%
+Good, practical performance, as doesn't need any heavy crypto.
+%
+
+%
+ObliviAd~\cite{obliviad} relies on hardware-based private information retrieval
+(PIR) for ad distribution and mixing of billing tokens to establish client
+privacy versus the platform.
+%
+
+%
+Adnostic~\cite{adnostic} (Boneh et al.) proposes a browser-based user profiling
+solution that moves the ad targeting into the user's browser and hides the
+specific ad choice from the platform, but provides a cryptographic protocol for
+billing the correct advertisers.
+%
+Green et al.~\cite{adnostic+} improved scale over Adnostic's protocol.
+%
+
+Pri-RTB~\cite{pri-rtb} is a private RTB protocol for a semi-honest setting,
+based on additively homomorphic encryption of user interest profiles.
+%
+It only seeks to hide user identities from advertisers, but trusts the
+auctioneer (the platform) to run the computation correctly.
+%
+
+%
+FLoC~\cite{floc} tracks user interests on the client side, and builds cohorts of
+users with similar interests; platform them targets ads to the cohorts rather
+than individuals.
+%
+
+\paragraph{Publisher/Advertiser trust in the platform.}
+
+%
+Verifiable, private auctions; MPC based ad auction work.
+%
+
+\paragraph{Click fraud prevention.}
+%
+\todo{Add some references}
 %
 
 \subsection{A better approach: Privacy-First Advertising}
