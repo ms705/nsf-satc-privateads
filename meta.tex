@@ -1,0 +1,85 @@
+\documentclass[11pt]{article}
+%\usepackage{helvet}
+%\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage{url}
+\usepackage{color}
+\usepackage{fullpage}
+\usepackage{xcolor}
+
+\newcommand{\enc}{\mathit{Enc}}
+\newcommand{\sign}{\mathit{Sign}}
+\newcommand{\verify}{\mathit{Verify}}
+
+\newcommand{\keygen}{\mathit{KeyGen}}
+\newcommand{\dec}{\mathit{Dec}}
+\newcommand{\pk}{\mathit{PK}}
+\newcommand{\sk}{\mathit{SK}}
+\newcommand{\A}{\mathcal{A}}
+
+\newcommand{\vk}{\mathit{VK}}
+\newcommand{\cert}{\mathit{cert}}
+
+\newcommand{\simulator}{\mathit{Simulator}}
+
+
+
+\date{}							% Activate to display a given date or no date
+
+\begin{document}
+
+%\paragraph{Project summary.}
+%Internet users often access resources that don’t care about who they are, as long as they are a real person and not a sybil. Meta knows enough to provide this assurance, and provides "log in with Facebook" buttons as a valuable authentication service. This offers a seamless experience to the user: they click "log in with Facebook" and are in, without a need to solve captchas, remember separate credentials, etc. Yet today this process provides no privacy to the user towards the authentication provider (here, Meta) or the third-party site they are authenticating to.
+
+%The goal of this research is to develop privacy-preserving authentication protocols and infrastructure for practical web services. These protocols will guarantee that a real user has authenticated (sybil detection) without revealing that user’s identity to the authentication provider (e.g., Meta), and (optionally, depending on application) without revealing it to the third party site. This will require innovative cryptographic primitives, systems support for key management, device portability, and scalability to many users, and new single-factor and two-factor authentication protocols.
+
+\subsection*{Introduction}
+Beyond content sharing, social networks like Facebook and Instagram provide valuable online identities. Other sites that users access more occasionally can benefit from these trusted, validated identities by relying on third-party logins (e.g., Meta’s, Google’s, or Twitter’s), rather than managing their own credentials. This is good security practice: small outfits lack the expertise to implement secure authentication protocols and to store credentials, and have a harder time detecting fake (“sybil”) accounts. Furthermore, third party applications may want to integrate social sharing features and content sourced from social networks, which also requires authentication. Today, the authentication protocol used for such social logins on third-party sites are based on the OAuth standard~\cite{oauth}, which provides a secure protocol and keeps the users’ password credentials confidential. However, OAuth cannot hide the user’s identity, and the authentication provider learns who is authenticating to which site, and so does the third-party site.
+
+Cryptographers have designed anonymous authentication protocols, including in PI Lysyanskaya’s prior work on blind signatures and anonymous credentials. The main idea behind anonymous credentials is that, instead of showing a cryptographic certificate/credential in the clear, a user instead provides a zero-knowledge proof of possession of such a credential.  Anonymous credentials are practical and provably secure~\cite{???}, although for the use case described here several challenges remain to be addressed. One significant challenge is to ensure that an anonymous credential system be secure even as several protocols are executed simultaneously with each other and with other cryptographic systems, i.e. that it is universally composable~\cite{uc}; it has recently been demonstrated that systems that are not provably composable are vulnerable~\cite{ros}.    
+
+\subsection*{Proposed Research}
+Building on existing anonymous credential schemes, we will design a practical end-to-end anonymous authentication protocol. On a high level, we will show how to ensure that a user is not a sybil without revealing their identity to the authentication provider. We assume an identity provider (e.g., Meta) who can be trusted to run infrastructure and to correctly execute the protocols (i.e., honest-but-curious) and users who authenticate from one or more client devices.
+
+Our general approach is based on anonymous authentication tokens (AATs) that the authentication provider and clients jointly generate, and which a verifier (who in some settings may be the authentication provider) can verify as genuine without learning the client’s identity. To protect against replay attacks and to limit the usefulness of stolen authentication tokens, each token has a unique serial number and expires after a fixed time. The (single-factor) authentication flow is as follows:
+\begin{itemize}
+\item The authentication provider orchestrates the protocol for picking the trusted parameters of the system, needed~\cite{lr22} to ensure that the overall system remains secure. Therefore the protocol for picking these parameters must be secure and include trustworthy, non-colluding entities (e.g., EFF, ACLU, other companies). 
+\item Clients periodically interact with the authentication provider to obtain the credentials they need to generate anonymous authentication tokens. AAT generation might be tied to existing proofs of a non-sybil account with the authentication provider (e.g., some number of friends or established account activity). The underlying cryptographic algorithm may be full-blown anonymous credentials~\cite{camlys} or anonymous credentials light~\cite{ballys}.
+\item When a client seeks to authenticate to a third-party site, they supply a fresh AAT to the site, which sends it to the authentication provider, who validates it (without learning the client’s identity). If the validation passes, the authentication provider indicates to the site that a valid user authenticated using standard protocols.
+\end{itemize}
+
+\paragraph{Challenges.} Making this work requires solving cryptographic challenges described below. Additionally, a practical implementation also requires solving systems questions about what happens ``under the hood”. For example, what happens if the client’s browser storage is erased and they need new keys?  How are their keys stored in the browser and protected? How would a daily issuance of fresh authentication tokens to clients work at the scale of Meta?
+ 
+Description of techniques: Rate-limited anonymous credentials.  How they would work in practice.  
+ 
+Challenges
+New crypto for setup
+Global key derivation design (committee/multi-party)
+Locally generate tokens that allow auth to third party sites
+Token expiration, issue tokens on first login?
+Local token generation vs. interactive with Meta
+Scale
+Replay attacks are easy to handle because Meta knows what tokens have been used
+
+\paragraph{Two-factor anonymous authentication.} Finally, we will extend our protocols to two-factor authentication with anonymous credentials. This is a hard problem because traditionally the authentication provider would send the second-factor request to a client device, but to do so they must know who the client is! Our idea is to leverage a second factor with its own keys and certificates that can be linked to the first factor via a shared attribute. The shared attribute is never revealed in the clear outside client devices; instead, a PRF of this attribute is computed on input the hash of some transaction data. This way, the verifier can see that the transaction is authenticated using both factors. However, this requires the first-factor device to communicate out-of-band with the second-factor device at token creation time to agree on the shared attribute. We plan to investigate systems solutions to this problem (e.g., leveraging the fact that devices might be on the same WiFi network, have a Bluetooth connection, or have trusted direct network tunnels between them). This ideally will result in a two-factor authentication solution that is as easy-to-use as today’s systems, but provides client privacy.
+
+\subsection*{Timeline}
+
+\noindent \textbf{8/1/22 - 11/30/22} Work on the policy paper. Identification of specific technical challenges, brainstorming with students.
+
+\noindent \textbf{12/1/22 - 12/31/22} Giving talks on the policy paper, writing shorter popular pieces on it, such as op-eds.
+
+\noindent \textbf{12/1/21 - 2/28/23} Solving the technical challenges identified earlier (with students).
+
+\noindent \textbf{3/1/23 - 5/31/23}  Writing the technical paper, submission to a peer-reviewed venue.
+
+\noindent \textbf{6/1/23 - 7/31/23}  Incorporating feedback on the paper, preparing and delivering technical talks.
+
+\newpage
+%\small
+\setcounter{page}{1}
+\small
+\bibliographystyle{alpha}
+\bibliography{abbrev3,crypto,annabib}
+
+\end{document}
