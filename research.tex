@@ -58,3 +58,12 @@ this part is significantly harder.  Assumptions about user interest categories.
 Validation schemes between publisher, platform and user.  Publisher tries to match ads to user interests.  Platform verifies (for a small sample of users) the interests as presented by the publisher against the user's browser history, and has a way to score whether the publisher is good at matching users with ads.  (Possibly on a per-campaign basis.)
 
 Calculating the conversion rate: how many people clicked on the ad, and also how many then proceeded to buy.
+
+\begin{enumerate}
+\item Send multiple ads to browser
+\item Browser decides which ad to show based on locally-computed interests
+\item If user clicks on the ad, the advertiser finds out
+\item To charge correctly, the platform needs to find out, so we need either (1) an incentive for the advertiser to communicate with the platform, or (2) notify the platform about the conversion
+\item Multiple possible solutions: advertiser needs to pass conversion token to platform to get information it needs in order to assess effectiveness of campaign; anonymizing proxy between browser and platform to handle conversion notifications
+\item All of the messages need to be privacy-preserving as far as the identity of the user is concerned
+\end{enumerate}
