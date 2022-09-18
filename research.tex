@@ -3,17 +3,52 @@
 
 %
 We plan to tackle the problem of privacy-first advertising in two broad steps:
-first, we establish the primitives needed to achieve trust between parties in
-the ad ecosystem to avoid click fraud without requiring privacy-invasive data
+first, we establish the primitives needed to carry out financial accounting in
+the ad ecosystem without requiring privacy-invasive data
 collection (\S\ref{r:fraud}), and then we address the ad matching process and
 hide users' interests and behavior from the other parties in the ecosystem
 (\S\ref{r:matching}).
 %
 
-\subsection{Preventing click fraud}
+\subsection{Preventing abuse when paying for ads, the privacy-preserving way}
 \label{r:fraud}
 
 \subsubsection{What we can do based on existing cryptographic algorithms}
+
+\paragraph{Preventing sybils with anonymous credentials.} 
+A better approach is when a platform uses anonymous credentials to tell sybils apart from legitimate users.
+%
+The platform would issue credentials to users who have performed some actions (such as staying on the platform, interacting with it) that increase the platform's trust that these users are humans rather than sybils.  
+%
+The more such credentials a user's browser has collected, the more evidence the platform has that the user is not a sybil.  
+
+Anonymous credentials~\cite{} can be issued and shown anonymously.
+% 
+In other words, the issuing party (here, the platform) does not learn anything about the recipient of the credential.
+%
+A user can subsequently prove possession of his credential(s), without revealing any additional information, and in a way that cannot be linked to the transaction in which the credential(s) was (were) issued.
+%
+It is possible to limit the number of times an anonymous credential can be shown~\cite{}, so that an adversary cannot perform a sybil attack by simply disseminating the keys necessary for showing these credentials.
+
+\paragraph{First step: user-trusted platform.} Building on existing anonymous credential schemes, we will design a practical end-to-end anonymous authentication protocol. On a high level, we will show how to ensure that a user is not a sybil without revealing their identity to the authentication provider. We assume an identity provider (e.g., Meta) who can be trusted to run infrastructure and to correctly execute the protocols (i.e., honest-but-curious) and users who authenticate from one or more client devices.
+
+Our general approach is based on \emph{anonymous authentication tokens} (AATs) that the authentication provider and clients jointly generate, and which a verifier (who in some settings may be the authentication provider) can verify as genuine without learning the client’s identity. To protect against replay attacks and to limit the usefulness of stolen authentication tokens, each token has a unique serial number and expires after a fixed time. The (single-factor) authentication flow is as follows:
+\begin{enumerate}[nosep]
+\item The authentication provider orchestrates the protocol for picking the trusted parameters of the system, needed~\cite{lr22} to ensure that the overall system remains secure. Therefore the protocol for picking these parameters must be secure and include trustworthy, non-colluding entities (e.g., EFF, ACLU, other companies).
+\item Clients periodically interact with the authentication provider to obtain the credentials they need to generate anonymous authentication tokens. AAT generation might be tied to existing proofs of a non-sybil account with the authentication provider (e.g., some number of friends or established account activity). The underlying cryptographic algorithm may be full-blown anonymous credentials~\cite{EC:camlys01} or anonymous credentials light~\cite{CCS:ballys13}.
+\item When a client authenticates to a third-party site, they supply a fresh AAT to the site, which sends it to the authentication provider, who validates it (without learning the client’s identity). If the validation passes, the authentication provider informs the site that a valid user authenticated.
+\end{enumerate}
+
+\paragraph{Challenges.} Making this work requires solving both cryptographic challenges and systems ones; here we list some of the research problems that need to be solved:
+\begin{itemize}[nosep]
+\item The design of the cryptographic protocol for setting up the system, which may require a custom multi-party computation protocol.
+\item Adapting existing protocols for obtaining and using tokens; this requires making design choices regarding when tokens are issued, when they expire, whether they are generated locally (with multi-use rate-limited credentials~\cite{chklm06}) or pre-loaded (with anonymous credentials light~\cite{CCS:ballys13}).
+\item Addressing systems concerns: what happens if the client’s browser storage is erased and they need new keys? How are keys stored in the browser and protected?
+\item Scale: How would a daily issuance of fresh authentication tokens to clients work at the scale of Meta?
+%\item Maintaining a database of used-up tokens to prevent token replay.
+\end{itemize}
+
+
 What works currently. %Malte
 
 Explanation of what we propose will happen. %Malte writes up our whiteboard design.

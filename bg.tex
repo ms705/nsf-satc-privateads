@@ -1,4 +1,4 @@
-\section{Background}
+\section{Background and Problem Areas}
 \label{s:bg}
 
 \subsection{Online Advertising}
@@ -26,12 +26,12 @@ The ad market therefore involves interaction between three parties:
    these ads;
  %
  \item the \textbf{publisher}, who operates a website that has an audience
-   of users to whom advertisers might wish the advertise, and who seeks
+   of users to whom advertisers might wish to advertise, and who seeks
    to monetize their content and audience by showing ads;
  %
  \item the \textbf{platform} or ``ad network'', who connects advertisers
-   to publishers who have users with the right interest, and takes cut
-   of the publisher's ad revenue; and
+   to publishers who have users with the right interest, and takes a cut
+   of the publishers' ad revenues; and
  %
  \item the \textbf{end user}, who uses the publisher's website and generates
    behavioral data (which could be sensitive) used for ad targeting in doing so,
@@ -62,7 +62,13 @@ users from their inventory of advertiser-provided ads.
   \item Google FLOC?
 \end{itemize}
 
-\subsection{Click Fraud}
+\subsection{Paying for Ads and Preventing Abuse}
+\todo{there are several types of fraud we want to address:
+(1) is the person who clicked on an ad legitimate, not a sybil?  
+(2) correctly accounting for which ad led a (legitimate) user to later visit the advertiser's site and/or complete a purchase. (3) making sure that the publisher/platform are rewarded for showing a successful ad.
+}
+
+\todo{break up this section because it both describes the background and proposed research.}
 
 %
 Advertising involves money changing hands, and thus provides incentives for
@@ -87,10 +93,6 @@ Consequently, they might generate fake traffic via sybil users (e.g., ``click
 farms''~\cite{understanding-ad-fraud}), or misrepresent the real users' interest
 towards the platform in order to get given more valuable ads in RTB.
 %
-\todo{Malte/Anna to insert more detail from FB document.}
-%
-
-%
 The easiest way to combat click fraud is for the platform to identify users,
 collect their information, and monitor their behavior at scale.
 %
@@ -98,6 +100,23 @@ Knowing more about the user make sybils expensive to create and maintain, but is
 of course diametrically opposed to the users' justified desire for online
 privacy.
 %
+Thus, a privacy-preserving ways of preventing sybils is a desirable alternative to this approach.
+
+
+In ad systems that reward a publisher for showing an ad on which the user acts later --- not by clicking the ad when it's shown, but by visiting the advertised site later and doing something meaningful, like making a purchase --- an even more sinister (from the privacy point of view) approach to tracking proliferated.  
+%
+An ad puts a cookie in the user's browser; when the user later visits a relevant site, it scans all the cookies for those relevant to its ad campaigns, thereby discovering which ad(s) caused the user to visit the site.
+%
+These cookies are so damaging to consumer privacy that a push to remove the support for these so-called ``third-party" cookies has been successful\footnote{\url{https://www.consumerreports.org/advertising-marketing/internet-advertising-is-about-to-change-third-party-cookies-a6221885875/}}.
+%
+Of course, the beneficiaries of this success are large platforms that do not need cookies to track users' activities, and can therefore benefit from the demise of smaller ad networks.
+%
+Unless a privacy-friendly way to handle the ad economy can be found, these platforms will have an ever greater incentive to track all of our activities.
+
+Finally, in addition to preventing malicious behavior from publishers, such as click fraud, ad ecosystems need to have mechanisms that ensures that advertisers reward publishers and platforms for serving successful ads.  
+
+
+
 
 \subsection{Related Work}
 \label{s:bg-related}
@@ -170,5 +189,6 @@ changes to software, particular end-user browsers.
 
 \subsection{Blind Signatures and Anonymous Credentials}
 \label{s:bg-crypto}
+
 
 \todo{Anna to fill in some background.}
