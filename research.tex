@@ -60,7 +60,7 @@ Making this work requires solving both cryptographic challenges and systems ones
 \paragraph{Reducing trust in the platform.}
 In the scenario above, a malicious platform can create sybils and charge the advertiser for fraudulent ads.  In order to increase the advertiser's confidence that a user is not a sybil, we can have several platforms grant credentials to a user; thus if the advertiser trusts one of them, that's evidence.  However, which platforms have given a user credentials may reveal information about the user's identity.  Thus we want the user to say "I have AATs from 2 out of 3 platforms, won't tell you which."
 
-\subsubsubsection{Preventing sybils with anonymous credentials} 
+\paragraph{Preventing sybils with anonymous credentials} 
 
 %What works currently. %Malte
 
@@ -88,14 +88,43 @@ Delegation of blind sig issuance capability.
 Post-quantum.
 
 \subsubsection{Systems open problems}
-% Malte
-How to scale using CDNs -- can't just give Akamai your cryptographic keys, need to certify each Akamai server involved. Also dealing with the more expensive crypto operations as part of being a platform/publisher.  Don't want to be orders of magnitude more expensive than today.
 
-On the user side: makes sure that the user's browser is following the correct protocol.
+%
+Online advertising operates at huge scale, with platforms serving millions of ad impressions per second, served by distributed systems of hundreds or thousands of servers.
+%
+Any practical solution to privacy-preserving advertising must therefore be \emph{scalable}, but making the proposed designs scalable requires addressing three challenges: (1) scaling to many servers, (2) the per-request costs imposed by cryptography, and (3) handling untrusted client browsers.
+%
 
-Backwards-compatibility.  Ad delivery should work using existing mechanisms, so no need for a new way to display ads in the browser.
-Convey the crypto information in addition to the actual ad, in a way that would work on existing browsers, and without cookies, or at least without identifying cookies.
+%
+A classic technique for scaling content delivery on the internet to many (geographically distributed) servers is to use a Content Distribution Network (CDN), such as Cloudflare or Akamai.
+%
+However, a naive solution where each CDN server has access to the cryptographic material needed is insecure. \todo{can't just give Akamai your cryptographic keys, need to certify each Akamai server involved.}
+%
 
+%
+Adding cryptography to real-time ad auctions and ad serving logic potentially increases the cost of each request by orders of magnitude---a prohibitive cost for the platform operator (who would have to buy and run many more servers) that would make the design impractical.
+%
+We plan to solve this problem by basing our protocols on lightweight cryptography that can execute quickly on the server side, and by leveraging offline pre-computation of secrets, such as a daily handshake between the ad platform and a client browser that provides a batch of ad tokens generated efficiently or during periods of low load on the platform (\eg at night).
+%
+%Also dealing with the more expensive crypto operations as part of being a platform/publisher.  Don't want to be orders of magnitude more expensive than today.
+
+%
+On the \emph{client side}, we must ensure that the client device follows the protocols correctly.
+%
+However, client software (such as browsers and device operating systems) are under the user's control and can be modified with malicious intent (\eg by a click farm operator).
+%
+We will therefore develop attestation mechanisms that ensure that the user's browser is following the correct protocol, \eg by relying on trusted hardware, such as TPMs and TEEs, that is now commonly available.
+%
+These hardware extensions can produce a cryptographic proof of the integrity of the running executable, and we imagine that an ad platform would keep a centralized allow-list of approved browser releases.
+%
+
+%
+Finally, the client-side ad delivery needs to be backwards-compatibile: it should use existing mechanisms, such as embedded images, JavaScript, and HTML iFrames, so browsers can integrate it easily.
+%
+This requires conveying the cryptographic information needed in addition to the actual ad, in a way that works on existing browsers and without using identifying per-user cookies.
+%
+For this, we will investigate integrating the cryptographic material in the ad's data itself (\eg image metadata, or HTML code served), or adding minimal extensions to the browser's DOM to convey this additional information in a backwards-compatible way.
+%
 
 
 \subsection{Targeting/bidding}
