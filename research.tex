@@ -13,6 +13,7 @@ hide users' interests and behavior from the other parties in the ecosystem
 \subsection{Preventing abuse when paying for ads, the privacy-preserving way}
 \label{r:fraud}
 
+<<<<<<< Updated upstream
 \paragraph{The big picture.}
 %
 When a user lands on an advertiser's website, the advertiser wants two pieces of information: (1) is this a real human, or a sybil? and (2) which ad was effective at sending this user here?
@@ -55,7 +56,41 @@ When it encounters an unknown browser, the platform treats it as suspicious (\ie
 Below, we sketch our privacy-preserving ad ecosystem in which the cryptographic protocols combined with the participants' incentives prevent them from cheating.
 %
 
+\subsubsection{The big picture}
+The ad market involves interaction between four types of mutually distrustful parties:
+\begin{enumerate}
+ \item the \textbf{advertiser}, who seeks to show ads to end users who
+   are likely to engage with them (possibly spending money with the
+   advertiser as a result), and who is willing to pay for users to view
+   these ads;
+ %
+ \item the \textbf{publisher}, who operates a website that has an audience
+   of users to whom advertisers might wish to advertise, and who seeks
+   to monetize their content and audience by showing ads;
+ %
+ \item the \textbf{platform} or ``ad network'', who connects advertisers
+   to publishers who have users with the right interest, and takes a cut
+   of the publishers' ad revenues; and
+ %
+ \item the \textbf{end user}, who uses the publisher's website and generates
+   behavioral data (which could be sensitive) used for ad targeting in doing so,
+   who sees the platform's chosen advertiser's ads and potentially interacts
+   with them.
+\end{enumerate}
+
+The money here flows from the advertisers to the platform(s) for placing ads with publishers so that they will ultimately be seen and acted upon by users.  The advertisers don't entirely trust the platforms to bill them correctly and need accounting mechanisms they can rely on and audit.  Similarly, the publishers do not entirely trust the platforms to accurately reward them for showing ads to visitors to their sites, and want trustworthy and auditable accounting mechanisms as well.  Our goal is to realize these mechanisms without any need for any of these parties to track the users.  
+
+%When a user lands on an advertiser's website, the advertiser wants two pieces of information: (1) is this a real human, or a sybil? and (2) which ad was effective at sending this user here?  In case this is a real user, the advertiser needs to reward the publisher/platform who showed the ad to the user.  In case the user makes a purchase, the advertiser (depending on the contract with the publisher or platform) may need to further reward the publisher or platform for the success of the ad.  
+
+%Thus, a mechanism for a privacy-preserving ad ecosystem in which all the participants' incentives prevent them from trying to cheat \todo{write this up}
+
+%Below, we describe pieces of our research agenda whose execution will make this big picture a reality.
+
+
 % to write up (Malte)
+
+Our overall vision for 
+
 \begin{itemize}
  \item browser is trusted by platform, and open-source, so auditable
  \item platform issues token to browser when showing ad
@@ -69,7 +104,7 @@ Below, we sketch our privacy-preserving ad ecosystem in which the cryptographic 
 
 Next, we describe our research agenda to make this protocol and the big picture sketched in this section a reality.
 
-\subsubsection{Research Goal 1: Efficient Composable Secure Blind Signatures}
+\subsubsection{Research Goal 1: Efficient Composable Secure Blind Signatures and Other Cryptographic Tokens}
 
 \subsubsection{Research Goal 2: Systems Design for Private Advertising}
 
