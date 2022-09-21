@@ -13,12 +13,47 @@ hide users' interests and behavior from the other parties in the ecosystem
 \subsection{Preventing abuse when paying for ads, the privacy-preserving way}
 \label{r:fraud}
 
-\subsubsection{The big picture}
-When a user lands on an advertiser's website, the advertiser wants two pieces of information: (1) is this a real human, or a sybil? and (2) which ad was effective at sending this user here?  In case this is a real user, the advertiser needs to reward the publisher/platform who showed the ad to the user.  In case the user makes a purchase, the advertiser (depending on the contract with the publisher or platform) may need to further reward the publisher or platform for the success of the ad.  
+\paragraph{The big picture.}
+%
+When a user lands on an advertiser's website, the advertiser wants two pieces of information: (1) is this a real human, or a sybil? and (2) which ad was effective at sending this user here?
+%
+In case this is a real user, the advertiser needs to reward the publisher/platform who showed the ad to the user.
+%
+In case the user makes a purchase, the advertiser needs to pay the platform, which rewards the publisher for the success of the ad.
+%
 
-Thus, a mechanism for a privacy-preserving ad ecosystem in which all the participants' incentives prevent them from trying to cheat \todo{write this up}
+%
+However, users would prefer to avoid revealing their activity related to ads to the publisher and to the platform.
+%
+In particular, we want to achieve the following privacy guarantees:
+\begin{enumerate}[nosep]
+  \item the user is anonymous to the platform at all times;
+  \item the publisher is anonymous towards the advertiser;
+  \item the advertiser is anonymous towards the publisher;
+  \item neither publisher, nor advertiser or platform find out which \emph{specific} interaction (content--ad--user combination)
+	resulted in a conversion, only that a real user, a real ad, and a real conversion event were involved.
+\end{enumerate}
+%
+However, we do \emph{not} assume anonymity between users and publishers (since users often authenticate to publishers to use their services), or between users and advertisers if a conversion happens (since the conversion involves a purchase, the advertiser finds out the user's identity anyway).
+%
 
-Below, we describe pieces of our research agenda whose execution will make this big picture a reality.
+\paragraph{Threat model.}
+%
+We assume that everyone trusts the platform to be honest-but-curious (\ie faithfully execute our protocol). 
+%
+We also assume that the platform trusts the client-side browser software to behave correctly.
+%
+Major ad platforms (\eg Google) in some cases also control browser software; however, since web browsers are open-source software, client-side modification is a possibility.
+%
+We assume that the ad platform can attest to the browser's integrity using technical means for remote attestation, such as a Trusted Platform Module (TPM).
+%
+When it encounters an unknown browser, the platform treats it as suspicious (\ie it might be a click farm) and refuses to serve ads to it.
+%
+
+\paragraph{Protocol overview.}
+%
+Below, we sketch our privacy-preserving ad ecosystem in which the cryptographic protocols combined with the participants' incentives prevent them from cheating.
+%
 
 % to write up (Malte)
 \begin{itemize}
@@ -31,7 +66,8 @@ Below, we describe pieces of our research agenda whose execution will make this 
  \item browser sends IOU to publisher
 \end{itemize}
 
-%\subsubsection{What we can do based on existing cryptographic algorithms}
+
+Next, we describe our research agenda to make this protocol and the big picture sketched in this section a reality.
 
 \subsubsection{Research Goal 1: Efficient Composable Secure Blind Signatures}
 
