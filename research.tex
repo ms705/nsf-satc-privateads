@@ -34,16 +34,27 @@ The ad market involves interaction between four types of mutually distrustful pa
    who sees the platform's chosen advertiser's ads and potentially interacts
    with them.
 \end{enumerate}
+%
+The money here flows from the advertisers to the platform for placing ads with publishers, so that they will ultimately be seen and acted upon by users.
+%
+The advertisers don't entirely trust the platforms to bill them correctly and need accounting mechanisms they can rely on and audit.
+%
+Similarly, the publishers do not entirely trust the platforms to accurately reward them for showing ads to visitors to their sites, and want trustworthy and auditable accounting mechanisms as well.
+%
+%
+%However, users would prefer to avoid revealing their activity related to ads to the publisher and to the platform.
+%
+Our goal is to realize these mechanisms \emph{without any need for any of these parties to track the users}.
+%
 
-The money here flows from the advertisers to the platform(s) for placing ads with publishers so that they will ultimately be seen and acted upon by users.  The advertisers don't entirely trust the platforms to bill them correctly and need accounting mechanisms they can rely on and audit.  Similarly, the publishers do not entirely trust the platforms to accurately reward them for showing ads to visitors to their sites, and want trustworthy and auditable accounting mechanisms as well.  Our goal is to realize these mechanisms without any need for any of these parties to track the users.  
-
+%
 In particular, we want to achieve the following privacy guarantees:
 \begin{enumerate}[nosep]
-  \item the user is anonymous to the platform at all times;
+  \item the end-user is anonymous towards the platform at all times;
   \item the publisher is anonymous towards the advertiser;
   \item the advertiser is anonymous towards the publisher;
-  \item neither publisher, nor advertiser or platform find out which \emph{specific} interaction (content--ad--user combination)
-	resulted in a conversion, only that a real user, a real ad, and a real conversion event were involved.
+  \item neither publisher, nor advertiser or platform find out which \emph{specific} interaction (the combination of user identity, content viewed, and ad shown)
+	resulted in a conversion; they only learn that a real user, a real ad, and a real conversion event were involved.
 \end{enumerate}
 %
 However, we do \emph{not} assume anonymity between users and publishers (since users often authenticate to publishers to use their services), or between users and advertisers if a conversion happens (since the conversion involves a purchase, the advertiser finds out the user's identity anyway).
@@ -63,21 +74,24 @@ When it encounters an unknown browser, the platform treats it as suspicious (\ie
 %
 
 
-%
-When a user lands on an advertiser's website, the advertiser wants two pieces of information: (1) is this a real human, or a sybil? and (2) which ad was effective at sending this user here?
-%
-In case this is a real user, the advertiser needs to reward the publisher/platform who showed the ad to the user.
-%
-In case the user makes a purchase, the advertiser needs to pay the platform, which rewards the publisher for the success of the ad.
-%
-
-%
-However, users would prefer to avoid revealing their activity related to ads to the publisher and to the platform.
-%
-
 \paragraph{Design overview.}
 %
-Below, we sketch our privacy-preserving ad ecosystem in which the cryptographic protocols combined with the participants' incentives prevent them from cheating.
+%When a user lands on an advertiser's website, the advertiser wants two pieces of information: (1) is this a real human, or a sybil? and (2) which ad was effective at sending this user here?
+%
+%In case this is a real user, the advertiser needs to reward the publisher/platform who showed the ad to the user.
+%
+%In case the user makes a purchase, the advertiser needs to pay the platform, which rewards the publisher for the success of the ad.
+%
+
+\begin{figure}
+ \centering
+ \todo{add diagram}
+ \caption{Overview of our privacy-preserving ad economy design.}
+ \label{f:overview}
+\end{figure}
+
+%
+We now sketch our privacy-preserving ad ecosystem in which the cryptographic protocols combined with the participants' incentives prevent them from cheating (Figure~\ref{f:overview}).
 %
 
 
