@@ -24,15 +24,14 @@
 % - plans for archiving data, samples, and other research products,
 %   and for preservation of access to them.
 
-%\todo{go over Xi's version}
-
 %
-The goal of this project is to explore systems techniques for constructing web
-services that are privacy-compliant by construction.
+The goal of this project is to explore the cryptographic and systems software
+design of a privacy-preserving online ad ecosystem.
 %
-As part of this effort, we plan to build working prototypes of web services and
-the systems that back them, including a new database, a blob store, and modified
-RPC libraries as well as plugins for existing systems (\eg ML frameworks).
+As part of this effort, we plan to build working prototypes of a
+privacy-preserving ad platform, the necessary client browser integration, and
+the cryptographic libraries needed to realize the blind signatures our design
+is based on.
 %
 All source code, configuration files, and instructions for reproducing published
 measurements of our systems will be made public, hosted via GitHub version
@@ -43,11 +42,11 @@ papers, source code,  benchmarks, and experimental results.
 %
 
 %
-The PI brings extensive experience with building and contributing to open-source
+The PIs bring extensive experience with building and contributing to open-source
 software.
 %
-Prior systems of his have become popular open-source projects (\eg the Noria
-dataflow system, which has 21 contributors, 102 pull requests, and 2,600 stars
+PI Schwarzkopf's prior systems have become popular open-source projects (\eg the
+Noria dataflow system, which has 23 contributors, 188 pull requests, and 4,400 stars
 on GitHub), or have been integrated with popular open-source software (\eg the
 Firmament cluster scheduler, for which an open-source community developed a
 plugin for Google's Kubernetes cluster manager).
@@ -56,10 +55,9 @@ All of this software is available for public access on GitHub.
 %
 
 \paragraph{Policies for Data Access and Sharing.}
-We will make the source code for our new dataflow systems, the federated
-database, the RPC library patches and inter-system dataflow tracking, and
-the tools for specifying, enforcing, and checking user-specific privacy
-policies, available for public download under open-source licenses.
+We will make the source code for our cryptographic protocols, as well as any
+browser modifications and prototypes server-side software available for public
+download under open-source licenses.
 %
 To ensure broad impact of our work, the source code will be available for reuse
 without restriction.
@@ -67,8 +65,8 @@ without restriction.
 
 \paragraph{Reproducibility of Experimental Results}
 %
-We will publish our results in peer-reviewed systems venues such as SOSP and
-OSDI, or database venues such as SIGMOD and VLDB.
+We will publish our results in peer-reviewed security and systems venues such as
+CRYPTO, IEEE S\&P, CCS, USENIX Security, SOSP, OSDI, or NSDI.
 %
 When a venue has a pre-publiction artifact evaluation process, we will
 participate and support third-party reproduction of our results.
@@ -99,14 +97,3 @@ allow for long-term retention.
 
 \paragraph{Data Privacy.}
 This research project does not involve confidential data or source code.
-
-%\paragraph{Responsible data management.}
-%All members of the investigative team with data access will be
-%instructed and certified in responsible research and scholarship
-%(e.g., via the Responsible Conduct of Research
-%course provided by the MIT Office of Sponsored Projects).  All data
-%acquired and preserved in the context of this proposal will be further
-%governed by the policies of the Massachusetts Institute of Technology
-%pertaining to intellectual property, record
-%retention, and data management.
-
