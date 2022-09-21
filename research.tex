@@ -110,10 +110,15 @@ Problems to work on:
 \item A better general compiler from somewhat-concurrently secure blind sigs to fully concurrently secure.  The known compilers are based on the user revealing all of his randomness to prove honest behavior.  The chances that he sent badly formed messages and was not caught is $1/n$.  But what if we use aggregation somehow, he reveals one half of what he is doing?  
 
 
-\item More concurrently secure schemes (discuss Abe's scheme).  Discuss scheme from the LRSW assumption and from linear-DH assumptions.
-\item 
+\item More concurrently secure schemes (discuss Abe's scheme).  Boldyreva's schemes makes a strong assumption.  Tessaro scheme is secure in the generic group model.  Discuss schemes from the LRSW assumption and from linear-DH assumptions and what it would take to make them concurrently secure.  
 \end{enumerate}
 
+The problem is that a blind signature scheme is not necessarily enough.  What we need is a blind signature with attributes (explain why). 
+
+\begin{enumerate}
+\item Salvaging stuff with Foteini.
+\item General tools for making anonymous credential schemes concurrently secure.  
+\end{enumerate}
 
 \subsubsection{Research Goal 2: Systems Design for Private Advertising}
 
