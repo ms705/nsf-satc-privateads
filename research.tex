@@ -96,6 +96,25 @@ Next, we describe our research agenda to make this protocol and the big picture 
 
 \subsubsection{Research Goal 1: Efficient Composable Secure Blind Signatures and Other Cryptographic Tokens}
 
+All the tokens generated in our vision of the ad economy need to be untraceable.  In other words, the transaction in which the token is issued, needs to be unlinkable to the one in which it is ``spent," or shown to a verifier.  The most well-studied cryptographic mechanism for such unlinkable tokens is a blind signature scheme.  
+
+\paragraph{Concurrently composable blind signature schemes.} The most efficient concurrently secure blind signatures known is the one due to Bellare et al.~\cite{} under the one-more-RSA assumption.  Unfortunately, the one-more-RSA assumption is somewhat non-standard.  
+
+Other techniques include PI Lysyanskaya's recent work on a transformation that converts a certain class of blind signature schemes~\cite{} that can tolerate $O(\log n)$ concurrent sessions into schemes that can tolerate $O(n)$ concurrent sessions, but at cost of an $O(n)$-fold increase in computation and an $O(\log n)$-fold increase in communication.  
+
+On the negative side, it was recently shown that a broad class of blind signature schemes are not concurrently secure~\cite{}.
+
+Problems to work on:
+
+\begin{enumerate}
+\item A better general compiler from somewhat-concurrently secure blind sigs to fully concurrently secure.  The known compilers are based on the user revealing all of his randomness to prove honest behavior.  The chances that he sent badly formed messages and was not caught is $1/n$.  But what if we use aggregation somehow, he reveals one half of what he is doing?  
+
+
+\item More concurrently secure schemes (discuss Abe's scheme).  Discuss scheme from the LRSW assumption and from linear-DH assumptions.
+\item 
+\end{enumerate}
+
+
 \subsubsection{Research Goal 2: Systems Design for Private Advertising}
 
 \subsubsection{Research Goal 3: Scalable Private Advertising}
