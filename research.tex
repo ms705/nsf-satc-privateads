@@ -93,18 +93,56 @@ When it encounters an unknown browser, the platform treats it as suspicious (\ie
 %
 We now sketch our privacy-preserving ad ecosystem in which the cryptographic protocols combined with the participants' incentives prevent them from cheating (Figure~\ref{f:overview}).
 %
+An interaction begins with a user visiting web content by the publisher (\eg the New York Times), which embeds ads provided by the platform (\eg Google or Meta).
+%
+Here, the publisher knows who the user is, but withholds this information from the platform.
+%
+\todo{do we care about publisher and platform colluding?}
+%
+The platform serves an ad, potentially based on user interests collected locally in the browser, alongside a cryptographic token that certifies that the ad was issued for the publisher, who may later demand payment from the platform.
+%
+This \emph{ad impression token} consists of a blind signature over a message $(P, a)$, documenting the identity of the publisher ($P$) and the ad shown ($a$).
+%
+Here, the platform is the user and the publisher is the signer of the blind signature protocol.
+%
 
+%
+The end-user's client browser receives the ad impression token alongside the ad, and embeds it in the publisher's content.
+%
+If the user clicks on the ad, their browser directs them to the advertiser's landing page.
+%
+However, the browser's request hides the source of the ad impression (\eg the HTTP referrer), so that the publisher remains anonymous to the advertiser.
+%
+The platform learns nothing about the user's interaction with the ad at this point. \todo{mismatch with current pay-per-click model!}
+%
+Instead, the browser forwards the ad impression token to the advertiser, who receives it as a opaque cryptographic token (\ie they cannot reads its contents, and thus cannot learn $P$ or $a$).
+%
 
-\begin{itemize}
-% \item browser is trusted by platform, and open-source, so auditable
- \item platform issues token to browser when showing ad
- \item browser forwards token to advertiser
- \item at point of conversion/purchase, advertiser issues token back to browser
- \item browser sends token to platform
- \item platform responds with IOU token
- \item browser sends IOU to publisher
-\end{itemize}
+%
+If the end-user now makes a purchase through the advertiser's website (a ``conversion event''), the advertiser incurs a responsibility to pay the platform, and the platform must pay the publisher.
+%
+To document this responsibility, the advertiser generates a \emph{conversion token}, a signed message that includes the original ad impression token as well as the advertiser's identity ($A$).
+%
+Again, we use blind signatures to realize this token. \todo{who is the signer and who is the user? Platform is the verifier, presumably.}
+%
+The advertiser sends this conversion token back to the client browser, which now has an encrypted token containing $(A, (P, a))$.
+%
+The end-user's client browser sends this conversion token to the platform, which can verify all included signatures, albeit without knowing the identities of the parties involved.
+%
+All the platform knows at this point is that a conversion involving a real user, a valid ad impression, and a real conversion event happened.
+%
 
+%
+Finally, the platform issues an \emph{IOU token} to the client browser. 
+%
+This token includes the conversion token and a signed statement that the platform has verified the conversion token's signatures. \todo{is this indirection step really needed? The publisher cannot fake the advertiser's signature, so presumably it can't create fake conversion tokens, and the conversion token might as well serve as the IOU token?}
+%
+The end-user client browser, which locally remembers the ad impression, sends the IOU token to the publisher, who can later redeem it with the platform for payment.
+%
+When the platform receives the IOU token from a publisher, it charges the advertiser and rewards the publisher.
+%
+
+\todo{NEED HERE: who exactly signs what!}
 
 Next, we describe our research agenda to make this protocol and the big picture sketched in this section a reality.
 
