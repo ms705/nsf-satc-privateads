@@ -93,58 +93,100 @@ When it encounters an unknown browser, the platform treats it as suspicious (\ie
 %
 We now sketch our privacy-preserving ad ecosystem in which the cryptographic protocols combined with the participants' incentives prevent them from cheating (Figure~\ref{f:overview}).
 %
-An interaction begins with a user visiting web content by the publisher (\eg the New York Times), which embeds ads provided by the platform (\eg Google or Meta).
+
 %
-Here, the publisher knows who the user is, but withholds this information from the platform.
+The platform (\eg Google or Meta) has a notion of active, non-sybil users, established \eg by continued engagement on the platform's services and a plausible usage history that is costly to fake.
 %
-\todo{do we care about publisher and platform colluding?}
+For each such user, the platform issues their devices with a secret that the browser on the user's device uses to derive \emph{user tokens} at a fixed rate.
 %
-The platform serves an ad, potentially based on user interests collected locally in the browser, alongside a cryptographic token that certifies that the ad was issued for the publisher, who may later demand payment from the platform.
+These user tokens are signed by the platform and certify that the platform knows that the owner is a valid, non-sybil human user, but when verified do not reveal the user's identity.
 %
-This \emph{ad impression token} consists of a blind signature over a message $(P, a)$, documenting the identity of the publisher ($P$) and the ad shown ($a$).
+Each ad displayed to a user consumes such a user token.
 %
-Here, the platform is the user and the publisher is the signer of the blind signature protocol.
+We expect to base the user token generation on existing work on compact tokens (see \S\ref{s:compacttokens}).
 %
 
 %
-The end-user's client browser receives the ad impression token alongside the ad, and embeds it in the publisher's content.
+An \textbf{ad interaction} begins with a user visiting web content by the publisher (\eg the New York Times), which embeds ads provided by the platform (\eg Google or Meta).
+%
+Here, the publisher knows who the user is on their service, but withholds this information from the platform, so the platform can no longer map publisher users (and their behavior) to its own users.
+%
+The device sends a previously-generated user token to the platform, which now knows that the request comes from a non-sybil user (but not from whom).
+%
+In response, the platform serves an ad, potentially based on user interests collected locally in the browser, alongside a signed token that certifies that the ad was issued for the publisher, who may later demand payment from the platform.
+%
+This \emph{ad impression token} consists of a blind signature with attributes $(P, a)$, documenting the identity of the publisher ($P$) and the ad shown ($a$).
+%
+Here, the platform is the signer and the user is the recipient in the blind signature protocol.
+%
+The identity of the publisher is a \emph{hidden} attribute, which is important to uphold the publisher's anonymity in the user's following potential interaction with the advertiser.
+%
+
+%
+The end-user's client browser receives the ad impression token alongside the ad, and embeds the ad in the publisher's content.
 %
 If the user clicks on the ad, their browser directs them to the advertiser's landing page.
 %
 However, the browser's request hides the source of the ad impression (\eg the HTTP referrer), so that the publisher remains anonymous to the advertiser.
 %
-The platform learns nothing about the user's interaction with the ad at this point. \todo{mismatch with current pay-per-click model!}
+The platform learns nothing about the user's interaction with the ad at this point.
 %
-Instead, the browser forwards the ad impression token to the advertiser, who receives it as a opaque cryptographic token (\ie they cannot reads its contents, and thus cannot learn $P$ or $a$).
+Instead, the browser forwards the ad impression token to the advertiser, who verifies that it is signed by the platform and thus must correspond to a non-sybil user's activity.
 %
-
-%
-If the end-user now makes a purchase through the advertiser's website (a ``conversion event''), the advertiser incurs a responsibility to pay the platform, and the platform must pay the publisher.
-%
-To document this responsibility, the advertiser generates a \emph{conversion token}, a signed message that includes the original ad impression token as well as the advertiser's identity ($A$).
-%
-Again, we use blind signatures to realize this token. \todo{who is the signer and who is the user? Platform is the verifier, presumably.}
-%
-The advertiser sends this conversion token back to the client browser, which now has an encrypted token containing $(A, (P, a))$.
-%
-The end-user's client browser sends this conversion token to the platform, which can verify all included signatures, albeit without knowing the identities of the parties involved.
-%
-All the platform knows at this point is that a conversion involving a real user, a valid ad impression, and a real conversion event happened.
+However, the advertiser cannot read the hidden attribute $P$, so the publisher remains anonymous; and the advertiser doesn't yet know the user's identity (as the ad impression token does not include it).
 %
 
 %
-Finally, the platform issues an \emph{IOU token} to the client browser. 
+If the end-user now makes a purchase through the advertiser's website (a ``conversion event''), the advertiser learns their identity.
 %
-This token includes the conversion token and a signed statement that the platform has verified the conversion token's signatures. \todo{is this indirection step really needed? The publisher cannot fake the advertiser's signature, so presumably it can't create fake conversion tokens, and the conversion token might as well serve as the IOU token?}
+In addition, the advertiser incurs a responsibility to pay the platform, and the platform must pay the publisher.
 %
-The end-user client browser, which locally remembers the ad impression, sends the IOU token to the publisher, who can later redeem it with the platform for payment.
+To document this responsibility, the advertiser generates a \emph{conversion token}, a signed message derived from the ad impression token (\eg by hashing it).
 %
-When the platform receives the IOU token from a publisher, it charges the advertiser and rewards the publisher.
+Again, we use blind signatures to realize this token, and have the advertiser sign it, while the end-user is the recipient and the platform is the verifier.
+%
+The advertiser sends the conversion token back to the client browser, which now has a token signed by $A$ documenting an ad conversion by a valid, non-sybil user.
+%
+The end-user's client browser sends this conversion token to the platform, which verifies the advertiser's signature on it.
+%
+The platform knows at this point that a real user saw a valid ad impression, and that a conversion event involving $A$ happened.
+%
+Importantly, the platform does not know the user's identity, and although it can map the ad impression to $P$ and the conversion to $A$, neither the publisher nor the advertiser know about each other (recall that $P$ is a hidden attribute of the ad impression token).
 %
 
-\todo{NEED HERE: who exactly signs what!}
+%
+Finally, in response to a verified conversion token, the platform issues an \emph{IOU token} to the client browser and saves the conversion token for future use.
+%
+The IOU token is a signed statement that the platform has verified the conversion token's signatures, and includes the publisher's identity ($P$) as an attribute.
+%
+The IOU token constitutes an obligation for the platform to pay $P$ if presented with the token by $P$.
+%
+The end-user client browser, which locally remembers the ad impression and publisher, sends the IOU token to $P$, who can later redeem it with the platform for payment.
+%
+When the platform receives the IOU token from a publisher, it verifies its own signature on it, charges the advertiser.
+%
+To charge the advertiser ($A$), the platform presents the conversion token signed by $A$, and $A$ verifies its signature on it.
+%
+$A$ pays the platform, which takes its cut, and finally rewards the publisher.
+%
 
-Next, we describe our research agenda to make this protocol and the big picture sketched in this section a reality.
+%
+This design achieves our privacy goals.
+%
+First, at no point is the platform aware of the user's identity, but it can trust that the user is a real platform user because the original ad impression was conditioned on the user presenting a user token.
+%
+Second, the user's identity on the platform remains hidden from publisher and advertiser, and the user may be known to the publisher and the advertiser under different identities (\eg a pseudonym with the publisher and their real name and address with the advertiser).
+%
+Third, the advertiser never finds out the publisher's identity, since it is hidden in the ad impression token and absent from the conversion token, and it never interacts with the publisher directly.
+%
+Fourth, the publisher never finds out the advertiser's identity, since it only receives IOU tokens from the user that do no mention the advertiser, and never interacts with the advertiser directly.
+%
+Finally, no party (except the end-user) finds out which specific combination of content, ad, and platform user resulted in a conversion, only that all of them are valid events and users: the platform knows the combination of $(P, a)$, but not which content the publisher embedded the ad in; the user's identity on the platform is always hidden; the advertiser never finds out the identity of the publisher or what content the ad was embedded in; and the publisher never finds out what ad the user saw.
+%
+
+%
+Next, we describe our research agenda to make this design a reality, and elaborate on the cryptographic and systems challenges we will need to address to achieve this.
+%
 
 \subsubsection{Research Goal 1: Untraceable Cryptographic Tokens}
 
