@@ -1,5 +1,99 @@
-\section{Overview}
+\section{Introduction}
 \label{s:overview}
+
+%\subsection{Online Advertising}
+
+Today's web ecosystem crucially relies on online advertising as a source of
+revenue for web services that are free to end users.
+%
+Advertising is a trillion-dollar market, with Google---one of the key
+players---seeing revenue upwards of \$140B in 2020 alone~\cite{xxx}.
+%
+
+The ad market involves interaction between four types of mutually distrustful parties:
+\begin{enumerate}
+ \item the \textbf{advertiser}, who seeks to show ads to end users who
+   are likely to engage with them (possibly spending money with the
+   advertiser as a result), and who is willing to pay for users to view
+   these ads;
+ %
+ \item the \textbf{publisher}, who operates a website that has an audience
+   of users to whom advertisers might wish to advertise, and who seeks
+   to monetize their content and audience by showing ads;
+ %
+ \item the \textbf{platform} or ``ad network'', who connects advertisers
+   to publishers who have users with the right interest, and takes a cut
+   of the publishers' ad revenues; and
+ %
+ \item the \textbf{end user}, who uses the publisher's website and generates
+   behavioral data (which could be sensitive) used for ad targeting in doing so,
+   who sees the platform's chosen advertiser's ads and potentially interacts
+   with them.
+\end{enumerate}
+%
+The money here flows from the advertisers to the platform for placing ads with publishers, so that they will ultimately be seen and acted upon by users.
+%
+The advertisers don't entirely trust the platforms to bill them correctly and need accounting mechanisms they can rely on and audit.
+%
+Similarly, the publishers do not entirely trust the platforms to accurately reward them for showing ads to visitors to their sites, and want trustworthy and auditable accounting mechanisms as well.
+%
+%
+%However, users would prefer to avoid revealing their activity related to ads to the publisher and to the platform.
+%
+Our goal is to realize these mechanisms \emph{without any need for any of these parties to track the users}.
+%
+
+%
+In particular, we want to achieve the following privacy guarantees:
+\begin{enumerate}[nosep]
+  \item the end-user is anonymous towards the platform at all times;
+  \item the publisher is anonymous towards the advertiser;
+  \item the advertiser is anonymous towards the publisher;
+  \item neither publisher, nor advertiser or platform find out which \emph{specific} interaction (the combination of user identity, content viewed, and ad shown)
+	resulted in a conversion; they only learn that a real user, a real ad, and a real conversion event were involved.
+\end{enumerate}
+%
+However, we do \emph{not} assume anonymity between users and publishers (since users often authenticate to publishers to use their services), or between users and advertisers if a conversion happens (since the conversion involves a purchase, the advertiser finds out the user's identity anyway).
+%
+
+
+Much of online advertising is \emph{targeted}, meaning that different users
+see different ads, targeted to their individual interests, as determined
+from user behavior, browsing history, and demographic information.
+%
+
+%
+Most websites and service operators that display ads outsource the choice of
+which ads to show to a particular user to a third-party.
+%
+The ad market therefore involves interaction between three parties:
+\begin{enumerate}
+ \item the \textbf{advertiser}, who seeks to show ads to end users who
+   are likely to engage with them (possibly spending money with the
+   advertiser as a result), and who is willing to pay for users to view
+   these ads;
+ %
+ \item the \textbf{publisher}, who operates a website that has an audience
+   of users to whom advertisers might wish to advertise, and who seeks
+   to monetize their content and audience by showing ads;
+ %
+ \item the \textbf{platform} or ``ad network'', who connects advertisers
+   to publishers who have users with the right interest, and takes a cut
+   of the publishers' ad revenues; and
+ %
+ \item the \textbf{end user}, who uses the publisher's website and generates
+   behavioral data (which could be sensitive) used for ad targeting in doing so,
+   who sees the platform's chosen advertiser's ads and potentially interacts
+   with them.
+\end{enumerate}
+%
+Well-known platforms include Google's and Meta's Ad business, as well
+as Bing Ads, Criteo, Zedo, and others.
+%
+As a middle-man between advertisers, publishers, and end users, the platform
+holds tremendous power and receives significant sensitive information, including
+who viewed which ad and whether they interacted with it.
+%
 
 The research objective of this proposal is to design cryptographic protocols and
 computer systems that improve data privacy in web advertising, today's
@@ -9,6 +103,228 @@ Our approach will, ideally, lead to technology that support today's advertising
 ecosystem with much improved privacy for individual users who view and
 interact with online advertisements.
 %
+
+
+
+
+\subsection{Ad Targeting}
+
+%
+In a \emph{targeted advertising} setting, a publisher shares information about
+their users with the platform, and the platform chooses ads to show to the
+users from their inventory of advertiser-provided ads.
+%
+
+\begin{itemize}
+  \item RTB (real-time bidding)
+  \item Need high-fidelity information about user interests
+  \item Cross-site trackers, reference Apple privacy change impact
+  \item Google FLOC?
+\end{itemize}
+
+\subsection{Paying for Ads and Preventing Abuse}
+\todo{there are several types of fraud we want to address:
+(1) is the person who clicked on an ad legitimate, not a sybil?  
+(2) correctly accounting for which ad led a (legitimate) user to later visit the advertiser's site and/or complete a purchase. (3) making sure that the publisher/platform are rewarded for showing a successful ad.
+}
+
+%\todo{break up this section because it both describes the background and proposed research.}
+
+%
+Advertising involves money changing hands, and thus provides incentives for
+fraud.
+%
+In the online ad ecosystem's threat model, individual parties seek to maximize
+their own revenue or minimize their costs.
+%
+Collusion between parties can happen (\eg a publisher may create sybil end
+users), and is common.
+%
+
+%
+The most important challenge is \textbf{click fraud}, which describes the idea
+of creating fake ad impressions and engagements in order to extract revenue from
+an advertiser.
+%
+In particular, a publisher gains financially from showing more ads and from
+showing higher-value ads.
+%
+Consequently, they might generate fake traffic via sybil users (e.g., ``click
+farms''~\cite{understanding-ad-fraud}), or misrepresent the real users' interest
+towards the platform in order to get given more valuable ads in RTB.
+%
+The easiest way to combat click fraud is for the platform to identify users,
+collect their information, and monitor their behavior at scale.
+%
+Knowing more about the user make sybils expensive to create and maintain, but is
+of course diametrically opposed to the users' justified desire for online
+privacy.
+%
+Thus, a privacy-preserving ways of preventing sybils is a desirable alternative to this approach.
+
+
+In ad systems that reward a publisher for showing an ad on which the user acts later --- not by clicking the ad when it's shown, but by visiting the advertised site later and doing something meaningful, like making a purchase --- an even more sinister (from the privacy point of view) approach to tracking proliferated.  
+%
+An ad puts a cookie in the user's browser; when the user later visits a relevant site, it scans all the cookies for those relevant to its ad campaigns, thereby discovering which ad(s) caused the user to visit the site.
+%
+These cookies are so damaging to consumer privacy that a push to remove the support for these so-called ``third-party" cookies has been successful\footnote{\url{https://www.consumerreports.org/advertising-marketing/internet-advertising-is-about-to-change-third-party-cookies-a6221885875/}}.
+%
+Of course, the beneficiaries of this success are large platforms that do not need cookies to track users' activities, and can therefore benefit from the demise of smaller ad networks.
+%
+Unless a privacy-friendly way to handle the ad economy can be found, these platforms will have an ever greater incentive to track all of our activities.
+
+Finally, in addition to preventing malicious behavior from publishers, such as click fraud, ad ecosystems need to have mechanisms that ensures that advertisers reward publishers and platforms for serving successful ads.  
+
+
+
+
+\subsection{Related Work}
+\label{s:bg-related}
+
+\paragraph{End-user privacy \vs the platform.}
+%
+PrivAd~\cite{privad} introduces an untrusted, anonymizing proxy between the
+client and the platform.
+%
+Has some click fraud detection; mixes requests from different clients for user
+anonymity.
+%
+Good, practical performance, as doesn't need any heavy crypto.
+%
+
+%
+ObliviAd~\cite{obliviad} relies on hardware-based private information retrieval
+(PIR) for ad distribution and mixing of billing tokens to establish client
+privacy versus the platform.
+%
+
+%
+Adnostic~\cite{adnostic} (Boneh et al.) proposes a browser-based user profiling
+solution that moves the ad targeting into the user's browser and hides the
+specific ad choice from the platform, but provides a cryptographic protocol for
+billing the correct advertisers.
+%
+Green et al.~\cite{adnostic+} improved scale over Adnostic's protocol.
+%
+
+Pri-RTB~\cite{pri-rtb} is a private RTB protocol for a semi-honest setting,
+based on additively homomorphic encryption of user interest profiles.
+%
+It only seeks to hide user identities from advertisers, but trusts the
+auctioneer (the platform) to run the computation correctly.
+%
+
+%
+FLoC~\cite{floc} tracks user interests on the client side, and builds cohorts of
+users with similar interests; platform them targets ads to the cohorts rather
+than individuals.
+%
+
+\paragraph{Publisher/Advertiser trust in the platform.}
+
+%
+Verifiable, private auctions; MPC based ad auction work.
+%
+
+\paragraph{Click fraud prevention.}
+%
+\todo{Add some references}
+%
+
+\subsection{A better approach: Privacy-First Advertising}
+
+%
+In this research, we plan to develop an alternative to today's privacy-invasive
+advertising ecosystem.
+%
+Our starting point is simple: we seek the reduce the information exchanged
+between the parties in the ad ecosystem to \emph{the minimum information
+necessary for successful ad targeting and for the parties to trust each other}
+that they have executed their part of the protocol faithfully and correctly.
+%
+
+%
+Our approach draws on cryptographic tools (\S\ref{s:bg-crypto}) and some minor
+changes to software, particular end-user browsers.
+
+\subsection{Blind Signatures and Anonymous Credentials}
+\label{s:bg-crypto}
+
+\paragraph{Blind signatures.} A blind signing protocol is a protocol between a signer and a user in which the user outputs a digital signature on the desired message, while the signer learns nothing about the message or the resulting signature.
+A blind signature scheme is a signature scheme that has a blind signing protocol.  In spite of having a relatively long history (they were introduced almost forty years ago by David Chaum~\cite{C:Chaum82}), blind signatures are a subject of excitement in the cryptography research community at the moment because they can be used as privacy-preserving authentication tokens that can replace browser cookies in certain applications, for example by the VPN by Google One (\url{https://one.google.com/about/vpn/howitworks}) and Apple's iCloud Private Relay (\url{https://www.apple.com/privacy/docs/iCloud_Private_Relay_Overview_Dec2021.PDF}). In the ad ecosystem space, they are part of 
+Apple's Safari browser proposal for privacy-preserving click measurements (\url{https://webkit.org/blog/11940/pcm-click-fraud-prevention-and-attribution-sent-to-advertiser/}).
+
+The formal definition of security of blind signatures~\cite{JC:PoiSte00,C:JueLubOst97,RSA:AbdNamNev06,JC:SchUnr17} requires two security properties: \emph{blindness} and \emph{one-more unforgeability}. Blindness guarantees that an adversarial signer can neither learn the message in the signing protocol nor link a particular message-signature pair to a protocol execution.  One-more unforgeability guarantees that an adversary cannot produce more signed messages than the number of times it invoked the signing protocol.  
+
+It is important that security hold even as the the blind signing protocol is executed together with other protocols.  At a minimum, therefore, the blind signing protocol needs to be concurrently self-composable.
+Unfortunately, when executed concurrently, some otherwise attractive blind signing protocols~\cite{C:Okamoto92,ICICS:Schnorr01,C:AbeOka00,C:Brands93,paquin2013u-prove,CCS:BalLys13,SP:STVWJG16,cryptoeprint:2017:682,JC:GJKR07} are no longer one-more-unforgeable; not in the sense that their proofs of security no longer apply, but recently a concrete and practical attack was discovered~\cite{EC:BLLOR21}. 
+A line of work seeking to obtain concurrently secure blind signatures has blossomed recently; PI Lysyanskaya is actively working in this area~\cite{}.\todo{add refs}
+
+\paragraph{Anonymous credentials.} Anonymous credentials~\cite{chaum85,lrsw99,camlys01a,lysyan02a,camlys04} allow Alice to prove to
+the access provider that she has a set of credentials, issued by some
+trusted issuer, or a set of issuers, that allow her to access the
+resource.  What makes them \emph{anonymous} is the fact that Alice's
+proof is \emph{zero-knowledge}, which means that the access provider
+learns nothing about Alice other than the fact that she possesses the
+needed credentials (so in particular, it does not learn who she is, or
+in fact any other information that would allow him to link this
+transaction to another transaction of the same user).  Moreover, Alice
+can also obtain credentials anonymously: an issuer need not know who
+Alice is in order to issue a credential.
+
+As a result of decades of research, it has been demonstrated that \emph{everything that can be done with non-anonymous credentials can also be done with anonymous credentials}.  Specifically, there are anonymous credential
+systems that are provably secure~\cite{lrsw99,lysyan02a,camlys02b},
+efficient enough for use in practice even on severely constrained
+devices~\cite{bhrlpb12,CCS:BalLys13}, allow issuers to place limits on how many
+times and in what context credentials can be
+used~\cite{caholy05,chklm06}, make it possible to revoke anonymous
+credentials essentially as effectively as non-anonymous digital
+credentials~\cite{camlys02a,lipeyu12a,lipeyu12b}, and yield themselves
+to identity escrow add-ons, which make it possible for a trusted
+anonymity revocation trustee, or a set of trustees, to find out
+Alice's identity in an emergency, after the transaction took
+place~\cite{bacaly04}.  These results have attracted wide attention
+beyond the cryptographic community: they have been implemented by
+industry leaders such as IBM and Microsoft, have found their way into
+industrial standards (such as the TCG standard), and underlined the
+policies that both the United States government and the EU government
+have towards balancing privacy and legitimate identification and
+authentication needs.  
+
+Anonymous credentials can be seen as a powerful generalization of blind signatures.  In obtaining a credential, not only does a user now have in their possession a token that is unlinkable to the transaction in which it was issued, but, importantly, this token now has some attributes that are certified by the issuer.  Additionally, this token can be used, unlinkably, more than once --- how many times it can be shown depends on the parameters of the overall system.  Thus, concurrent composition of anonymous credentials is also difficult to achieve; known provably secure systems only show security in the sequential setting~\cite{} or by resorting to cumbersome and hard-to-set-up tools~\cite{}. \todo{add refs}
+
+%\todo{Anna to fill in some background.}
+
+
+
+%
+We plan to tackle the problem of privacy-first advertising in two broad steps:
+first, we establish the primitives needed to carry out financial accounting in
+the ad ecosystem without requiring privacy-invasive data
+collection (\S\ref{r:fraud}), and then we address the ad matching process and
+hide users' interests and behavior from the other parties in the ecosystem
+(\S\ref{r:matching}).
+%
+
+\subsection{Preventing abuse when paying for ads, the privacy-preserving way}
+\label{r:fraud}
+
+\subsubsection{The big picture}
+
+\paragraph{Threat model.}
+%
+We assume that everyone trusts the platform to be honest-but-curious (\ie faithfully execute our protocol). 
+%
+We also assume that the platform trusts the client-side browser software to behave correctly.
+%
+Major ad platforms (\eg Google) in some cases also control browser software; however, since web browsers are open-source software, client-side modification is a possibility.
+%
+We assume that the ad platform can attest to the browser's integrity using technical means for remote attestation, such as a Trusted Platform Module (TPM).
+%
+When it encounters an unknown browser, the platform treats it as suspicious (\ie it might be a click farm) and refuses to serve ads to it.
+%
+
+
 
 \paragraph{Motivation.}
 
