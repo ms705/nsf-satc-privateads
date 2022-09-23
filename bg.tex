@@ -1,3 +1,104 @@
 \section{Background and Problem Areas}
 \label{s:bg}
 
+\subsection{Ad Targeting}
+
+%
+In a \emph{targeted advertising} setting, a publisher shares information about
+their users with the platform, and the platform chooses ads to show to the
+users from their inventory of advertiser-provided ads.
+%
+
+\begin{itemize}
+  \item RTB (real-time bidding)
+  \item Need high-fidelity information about user interests
+  \item Cross-site trackers, reference Apple privacy change impact
+  \item Google FLOC?
+\end{itemize}
+
+\subsection{Paying for Ads and Preventing Abuse}
+\todo{there are several types of fraud we want to address:
+(1) is the person who clicked on an ad legitimate, not a sybil?  
+(2) correctly accounting for which ad led a (legitimate) user to later visit the advertiser's site and/or complete a purchase. (3) making sure that the publisher/platform are rewarded for showing a successful ad.
+}
+
+%\subsection{A better approach: Privacy-First Advertising}
+
+%Our starting point is simple: we seek the reduce the information exchanged
+%between the parties in the ad ecosystem to \emph{the minimum information
+%necessary for successful ad targeting and for the parties to trust each other}
+%that they have executed their part of the protocol faithfully and correctly.
+%
+
+%
+
+\subsection{Blind Signatures and Anonymous Credentials}
+\label{s:bg-crypto}
+
+\paragraph{Blind signatures.} A blind signing protocol is a protocol between a signer and a user in which the user outputs a digital signature on the desired message, while the signer learns nothing about the message or the resulting signature.
+A blind signature scheme is a signature scheme that has a blind signing protocol.  In spite of having a relatively long history (they were introduced almost forty years ago by David Chaum~\cite{C:Chaum82}), blind signatures are a subject of excitement in the cryptography research community at the moment because they can be used as privacy-preserving authentication tokens that can replace browser cookies in certain applications, for example by the VPN by Google One (\url{https://one.google.com/about/vpn/howitworks}) and Apple's iCloud Private Relay (\url{https://www.apple.com/privacy/docs/iCloud_Private_Relay_Overview_Dec2021.PDF}). In the ad ecosystem space, they are part of 
+Apple's Safari browser proposal for privacy-preserving click measurements (\url{https://webkit.org/blog/11940/pcm-click-fraud-prevention-and-attribution-sent-to-advertiser/}).
+
+The formal definition of security of blind signatures~\cite{JC:PoiSte00,C:JueLubOst97,RSA:AbdNamNev06,JC:SchUnr17} requires two security properties: \emph{blindness} and \emph{one-more unforgeability}. Blindness guarantees that an adversarial signer can neither learn the message in the signing protocol nor link a particular message-signature pair to a protocol execution.  One-more unforgeability guarantees that an adversary cannot produce more signed messages than the number of times it invoked the signing protocol.  
+
+It is important that security hold even as the the blind signing protocol is executed together with other protocols.  At a minimum, therefore, the blind signing protocol needs to be concurrently self-composable.
+Unfortunately, when executed concurrently, some otherwise attractive blind signing protocols~\cite{C:Okamoto92,ICICS:Schnorr01,C:AbeOka00,C:Brands93,paquin2013u-prove,CCS:BalLys13,SP:STVWJG16,cryptoeprint:2017:682,JC:GJKR07} are no longer one-more-unforgeable; not in the sense that their proofs of security no longer apply, but recently a concrete and practical attack was discovered~\cite{EC:BLLOR21}. 
+A line of work seeking to obtain concurrently secure blind signatures has blossomed recently; PI Lysyanskaya is actively working in this area~\cite{}.\todo{add refs}
+
+\paragraph{Anonymous credentials.} Anonymous credentials~\cite{chaum85,lrsw99,camlys01a,lysyan02a,camlys04} allow Alice to prove to
+the access provider that she has a set of credentials, issued by some
+trusted issuer, or a set of issuers, that allow her to access the
+resource.  What makes them \emph{anonymous} is the fact that Alice's
+proof is \emph{zero-knowledge}, which means that the access provider
+learns nothing about Alice other than the fact that she possesses the
+needed credentials (so in particular, it does not learn who she is, or
+in fact any other information that would allow him to link this
+transaction to another transaction of the same user).  Moreover, Alice
+can also obtain credentials anonymously: an issuer need not know who
+Alice is in order to issue a credential.
+
+As a result of decades of research, it has been demonstrated that \emph{everything that can be done with non-anonymous credentials can also be done with anonymous credentials}.  Specifically, there are anonymous credential
+systems that are provably secure~\cite{lrsw99,lysyan02a,camlys02b},
+efficient enough for use in practice even on severely constrained
+devices~\cite{bhrlpb12,CCS:BalLys13}, allow issuers to place limits on how many
+times and in what context credentials can be
+used~\cite{caholy05,chklm06}, make it possible to revoke anonymous
+credentials essentially as effectively as non-anonymous digital
+credentials~\cite{camlys02a,lipeyu12a,lipeyu12b}, and yield themselves
+to identity escrow add-ons, which make it possible for a trusted
+anonymity revocation trustee, or a set of trustees, to find out
+Alice's identity in an emergency, after the transaction took
+place~\cite{bacaly04}.  These results have attracted wide attention
+beyond the cryptographic community: they have been implemented by
+industry leaders such as IBM and Microsoft, have found their way into
+industrial standards (such as the TCG standard), and underlined the
+policies that both the United States government and the EU government
+have towards balancing privacy and legitimate identification and
+authentication needs.  
+
+Anonymous credentials can be seen as a powerful generalization of blind signatures.  In obtaining a credential, not only does a user now have in their possession a token that is unlinkable to the transaction in which it was issued, but, importantly, this token now has some attributes that are certified by the issuer.  Additionally, this token can be used, unlinkably, more than once --- how many times it can be shown depends on the parameters of the overall system.  Thus, concurrent composition of anonymous credentials is also difficult to achieve; known provably secure systems only show security in the sequential setting~\cite{} or by resorting to cumbersome and hard-to-set-up tools~\cite{}. \todo{add refs}
+
+%\todo{Anna to fill in some background.}
+
+
+
+%
+%
+
+%\subsection{Preventing abuse when paying for ads, the privacy-preserving way}
+%\label{r:fraud}
+
+%\subsubsection{The big picture}
+
+
+
+
+%\paragraph{Motivation.}
+
+%\paragraph{Background.}
+
+%\paragraph{Vision.}
+
+%\paragraph{Challenges.}
+
+%\paragraph{Approach.}
