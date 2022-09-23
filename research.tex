@@ -160,21 +160,31 @@ Thus, in spite of its importance, the problem of coming up with a practical conc
 \begin{description}
 \item[Blind signature from the LRSW assumption] The LRSW assumption was introduced by the PI in 1999, and is by now a fairly established one.  The assumption is that, given a public key $(X,Y)= (g^x,g^y)$ in some group $G$ with generator $g$, and an oracle that, on input $m$, samples a random $a\leftarrow G$ and returns $(a,a^y,a^{x+mxy})$, it hard to produce a tuple $(m^*,a,a^y,a^{x+m^*xy})$ for $m^*\neq 0$ without querying the oracle for $m^*$; under this assumption, a signature on a message $m$ is just one such sample; signature verification requires a bilinear pairing.  A (stand-alone) secure two-party protocol whereby a user receives a signature on his message $m$ while the signer learns nothing about $m$ is already known~\cite{C:CamLys04}.  
 
-Thus, to turn it into a practical concurrently secure blind signature scheme we need to adapt this protocol to ensure that it remains secure under concurrent composition.  This is quite doable: the signer's view can be independent of $m$ (so blindness in the concurrent setting us for free), while the user needs to simply supply some proofs of knowledge of $m$ (and other quantities) that can be carried out in a concurrently secure fashion using either the Fischlin compiler~\cite{} in the random-oracle model or other techniques~\cite{}. Thanks to the PI's recent work~\cite{}, not only do we believe that the resulting blind signature can be proven concurrently secure, but it can be proven UC-secure as well. 
+Thus, to turn it into a practical concurrently secure blind signature scheme we need to adapt this protocol to ensure that it remains secure under concurrent composition.  This is quite doable: the signer's view can be independent of $m$ (so blindness in the concurrent setting us for free), while the user needs to simply supply some proofs of knowledge of $m$ (and other quantities) that can be carried out in a concurrently secure fashion using the Fischlin compiler~\cite{} in the random-oracle model, or using other techniques~\cite{}. Thanks to the PI's recent work~\cite{}, not only do we believe that the resulting blind signature can be proven concurrently secure, but it can be proven UC-secure as well. 
 
 \item[Blind signatures from other signatures with efficient protocols]  The above approach can be generalized.  Notice that its starting point was an anonymous credential scheme. To obtain concurrently secure blind signatures from an anonymous credential scheme, the general approach is to (1) make sure that the credential issue protocol is concurrently secure; (2) instead of carrying out a zero-knowledge proof of knowledge of a signature as generally done in the anonymous credentials literature, give the signature in the clear.  Using this approach, we should be able to also obtain concurrently secure blind signatures under the strong Diffie-Hellman assumption~\cite{} as well as the strong RSA assumption~\cite{}.  
 
-We plan to show that this is a successful approach.  However, there is something intellectually unsatisfying about using such a general and computationally involved tool (multi-show anonymous credentials) for such seemingly simpler primitive of a blind signature.  
+We plan to show that this is a successful approach.  However, there is something intellectually unsatisfying about using such a general and computationally involved tool (multi-show anonymous credentials) for the seemingly simpler primitive of a blind signature.  Therefore we expect that the resulting constructions will just be starting points; as we write down their proofs of security we will (we expect) discover that they can be made simpler and more efficient.
 
-\item[Improved efficiency for the generic compiler of~\cite{}]  A better general compiler from somewhat-concurrently secure blind sigs to fully concurrently secure.  The known compilers are based on the user revealing all of his randomness to prove honest behavior.  The chances that he sent badly formed messages and was not caught is $1/n$.  But what if we use aggregation somehow, he reveals one half of what he is doing?  
+\item[Improvements of the generic compiler of~\cite{}]  A complementary approach is to work on improving the generic compiler of~\cite{}.  
+Currently known compilers are based on the user revealing most of his randomness to the signer to prove honest behavior, and keeping just one out of the $n$ sessions live.  The chances that he sent badly formed messages and was not caught is $1/n$.  But what if we use aggregation somehow, so that he reveals one half of what he is doing, and yet only succeeds in obtaining a signature at the end if he cheats in all of the remaining (unchecked) sessions? Then we obtain a compiler for converting a standalone blind signature into a concurrently secure one.  
 \end{description}
 
+
+\paragraph{Partially blind signatures}
+
+
+\paragraph{Blind signatures with attributes}
 The problem is that a blind signature scheme is not necessarily enough.  What we need is a blind signature with attributes (explain why). 
 
 \begin{enumerate}
 \item Salvaging stuff with Foteini.
 \item General tools for making anonymous credential schemes concurrently secure.  
 \end{enumerate}
+
+\paragraph{Compact tokens}
+
+
 
 \subsubsection{Research Goal 2: Systems Design for Private Advertising}
 
