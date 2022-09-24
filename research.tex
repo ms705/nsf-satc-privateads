@@ -115,11 +115,15 @@ Finally, no party (except the end-user) finds out which specific combination of 
 Next, we describe our research agenda to make this design a reality, and elaborate on the cryptographic and systems challenges we will need to address to achieve this.
 %
 
-\subsubsection{Research Goal 1: Untraceable Cryptographic Tokens}
+\subsection{Research Goal 1: Untraceable Cryptographic Tokens}
+\label{rg1}
 
 At a minimum, all the tokens generated in our design of the ad economy need to be untraceable.  In other words, the transaction in which the token is issued needs to be unlinkable to the one in which it is ``spent," or shown to a verifier.  The most well-studied cryptographic mechanism for such unlinkable tokens is a blind signature scheme.  The sheer volume of the tokens being issued in a system of this scale requires that these tokens be concurrently secure (i.e. remain unforgeable in the presence of an adversary that causes several tokens to be concurrently issued to adversarial users). Recently, a devastating attack was discovered on numerous proposed constructions of blind signatures~\cite{}, even those provably unforgeable in the stand-alone or sequential setting.  This attack makes it clear that, unless a blind signature scheme is proven secure in the concurrent setting, its proof of security is not good enough.
 
-\paragraph{Concurrently composable blind signature schemes.}  Bellare et al.~\cite{JC:BNPS03} gave a blind signature scheme that is concurrently unforgeable under the one-more-RSA assumption; recently, another concurrently secure blind signature scheme was proposed as a standard~\cite{} and shown (by PI Lysyanskaya) to also be unforgeable under the one-more-RSA assumption~\cite{EPRINT:Lysyanskaya22}.  Unfortunately, the one-more-RSA assumption is somewhat non-standard.  Additionally, RSA-based schemes generally require larger public-key and signature sizes than, say, schemes that are based on elliptic curve cryptography.  In the elliptic curve setting, the most efficient schemes are those due to Tessaro and Zhu~\cite{EC:TesZhu22}; unfortunately their proof of security also relies on strong modeling assumptions for the underlying groups, such as the generic group model and the algebraic group model~\cite{C:FucKilLos18,EC:Shoup97}.  In the bilinear pairing setting~\cite{}, Boldyreva's scheme also provides an efficient concurrently secure blind signature~\cite{PKC:Boldyreva03}, but unfortunately its proof of security relies on the one-more-discrete-logarithm assumption~\cite{C:BelPal02}, which is a non-falsifiable assumption~\cite{C:Naor03}.  
+\subsection{Concurrently composable blind signature schemes}  
+\label{rg1:blindsigs}
+
+Bellare et al.~\cite{JC:BNPS03} gave a blind signature scheme that is concurrently unforgeable under the one-more-RSA assumption; recently, another concurrently secure blind signature scheme was proposed as a standard~\cite{} and shown (by PI Lysyanskaya) to also be unforgeable under the one-more-RSA assumption~\cite{EPRINT:Lysyanskaya22}.  Unfortunately, the one-more-RSA assumption is somewhat non-standard.  Additionally, RSA-based schemes generally require larger public-key and signature sizes than, say, schemes that are based on elliptic curve cryptography.  In the elliptic curve setting, the most efficient schemes are those due to Tessaro and Zhu~\cite{EC:TesZhu22}; unfortunately their proof of security also relies on strong modeling assumptions for the underlying groups, such as the generic group model and the algebraic group model~\cite{C:FucKilLos18,EC:Shoup97}.  In the bilinear pairing setting~\cite{}, Boldyreva's scheme also provides an efficient concurrently secure blind signature~\cite{PKC:Boldyreva03}, but unfortunately its proof of security relies on the one-more-discrete-logarithm assumption~\cite{C:BelPal02}, which is a non-falsifiable assumption~\cite{C:Naor03}.  
 
 The most efficient concurrently secure blind signature schemes relying on well-understood assumptions such as the standard RSA assumption and the computational Diffie-Hellman assumption in the bilinear setting are due to PI Lysyanskaya~\cite{}; unfortunately, the signer's computation in these schemes is proportional to the number of concurrent sessions in the system which, for our scenario, is prohibitively high. 
 Other techniques include PI Lysyanskaya's work~\cite{} on a transformation that converts a certain broad class of blind signature schemes~\cite{EC:HauKilLos19} that can tolerate $O(\log n)$ concurrent sessions into schemes that can tolerate $O(n)$ concurrent sessions, but, again, at cost of an $O(n)$-fold increase in computation and an $O(\log n)$-fold increase in communication (building on techniques developed by Katz et al.~\cite{AC:KatLosRos21}).  All these schemes are proven secure in the random-oracle model.
@@ -140,10 +144,22 @@ Currently known compilers are based on the user revealing most of his randomness
 \end{description}
 
 
-\paragraph{Partially blind signatures}
+\subsection{Partially blind signatures}
+\label{rg1:partially}
 
+\begin{description}
+\item[General transformation from blind signatures] Suppose that we are given a two-round blind signature.  For example, the FDH-RSA-based blind signature of Bellare et al.~\cite{} is two-round: in the first round, the user sends $x=H(m)r^e \bmod N$ to the signer (where $m$ is the message, $r$ is a random element of $Z_N^*$, $H$ is hash function modeled as a random oracle, and $(N,e)$ is the signer's RSA public key), and in the second round, the signer responds by providing $y$ such that $y^e=x\bmod N$.  The user derives the signature $s = y/r \bmod N$.  It seems surprising that the signer should be able to embed any information $I$ into the message, since his view is completely independent from this message.  Yet, in our preliminary work, we have discovered the following simple cut-and-choose transformation from this signature scheme to a partially blind one.  
 
-\paragraph{Blind signatures with attributes}
+Suppose the user wants the values $(I,M)$ signed, where $I$ is the part that the signer wants to enforce, while $M$ can be any $\ell$-bit value.  He picks a random message ID $a$, and $n$ nonces $b_1\ldots,b_n$, all of length $\ell$.  For $1\leq i \leq n$, let $m_i = I \circ H(M\circ a \circ b_i)$.  The user then picks $r_1,\ldots r_n$ and sends $(x_1,\ldots,x_n) = (H(m_1)r_1^e,\ldots H(m_n)r_n^e)$ to the signer.  Next, the signer selects a subset $J$ of $n/2$ indices and asks the user to reveal $r_j$ and $h_j = H(M\circ a \circ b_j)$ for $j\in J$.  If for all $j \in J$, $x_j = H(I \circ h_j)r_j^e$, then for every $i \notin J$, the signer responds with $y_i$, and the user outputs the signature $\sigma = (a,\{(b_i,s_i)\}$ consisting of the outputs of the $n/2$ surviving sessions.  The verification algorithm for this signature scheme accepts the signature $\sigma$ on the pair $(I,M)$ if for all $i$, $s_i^e = H(i \circ H(M\circ a \circ b_i))$.  The probability that a malicious user succeeds in getting a signature for incorrect $I$ is $2^{-n}$, since this event can only happen if he guesses the set $J$ correctly.  If the stakes are not terribly high (since the cost of occasionally getting an incorrect signature in our application are small), $n$ can be as low as 30, so that once in a billion transactions, an adversarial user may succeed.  
+
+This compiler also generalizes to Boldyreva's blind signature.  We will analyze this compiler more closely and examine whether it (perhaps in a modified form) generalizes to other schemes as well, and how it interacts with other compilers, i.e. whether it's possibly to reduce its overhead when it is executed jointly with, say, the compiler PI Lysyanskaya recently came up with~\cite{}.
+
+\item[Partially blind signatures using anonymous credentials.] In Section~\ref{rg1:blindsigs}, we gave our preliminary ideas for obtaining new concurrently secure blind signatures by using techniques that the PI developed as part of her work on anonymous credentials.  These techniques are very well suited for partially blind signatures, because the schemes we have in anonymous credentials allow for attributes that can be verified by the signer.
+\end{description}
+
+\subsection{Blind signatures with attributes}
+\label{rg1:attributes}
+
 The problem is that a blind signature scheme is not necessarily enough.  What we need is a blind signature with attributes (explain why). 
 
 \begin{enumerate}
@@ -151,8 +167,8 @@ The problem is that a blind signature scheme is not necessarily enough.  What we
 \item General tools for making anonymous credential schemes concurrently secure.  
 \end{enumerate}
 
-\paragraph{Compact tokens}
-
+\subsection{Compact tokens}
+\label{rg1:compact}
 
 
 \subsubsection{Research Goal 2: Systems Design for Private Advertising}
