@@ -120,7 +120,7 @@ Next, we describe our research agenda to make this design a reality, and elabora
 
 At a minimum, all the tokens generated in our design of the ad economy need to be untraceable.  In other words, the transaction in which the token is issued needs to be unlinkable to the one in which it is ``spent," or shown to a verifier.  The most well-studied cryptographic mechanism for such unlinkable tokens is a blind signature scheme.  The sheer volume of the tokens being issued in a system of this scale requires that these tokens be concurrently secure (i.e. remain unforgeable in the presence of an adversary that causes several tokens to be concurrently issued to adversarial users). Recently, a devastating attack was discovered on numerous proposed constructions of blind signatures~\cite{}, even those provably unforgeable in the stand-alone or sequential setting.  This attack makes it clear that, unless a blind signature scheme is proven secure in the concurrent setting, its proof of security is not good enough.
 
-\subsection{Concurrently composable blind signature schemes}  
+\subsubsection{Concurrently composable blind signature schemes}  
 \label{rg1:blindsigs}
 
 Bellare et al.~\cite{JC:BNPS03} gave a blind signature scheme that is concurrently unforgeable under the one-more-RSA assumption; recently, another concurrently secure blind signature scheme was proposed as a standard~\cite{} and shown (by PI Lysyanskaya) to also be unforgeable under the one-more-RSA assumption~\cite{EPRINT:Lysyanskaya22}.  Unfortunately, the one-more-RSA assumption is somewhat non-standard.  Additionally, RSA-based schemes generally require larger public-key and signature sizes than, say, schemes that are based on elliptic curve cryptography.  In the elliptic curve setting, the most efficient schemes are those due to Tessaro and Zhu~\cite{EC:TesZhu22}; unfortunately their proof of security also relies on strong modeling assumptions for the underlying groups, such as the generic group model and the algebraic group model~\cite{C:FucKilLos18,EC:Shoup97}.  In the bilinear pairing setting~\cite{}, Boldyreva's scheme also provides an efficient concurrently secure blind signature~\cite{PKC:Boldyreva03}, but unfortunately its proof of security relies on the one-more-discrete-logarithm assumption~\cite{C:BelPal02}, which is a non-falsifiable assumption~\cite{C:Naor03}.  
@@ -144,7 +144,7 @@ Currently known compilers are based on the user revealing most of his randomness
 \end{description}
 
 
-\subsection{Partially blind signatures}
+\subsubsection{Partially blind signatures}
 \label{rg1:partially}
 
 \begin{description}
@@ -157,7 +157,7 @@ This compiler also generalizes to Boldyreva's blind signature.  We will analyze 
 \item[Partially blind signatures using anonymous credentials.] In Section~\ref{rg1:blindsigs}, we gave our preliminary ideas for obtaining new concurrently secure blind signatures by using techniques that the PI developed as part of her work on anonymous credentials.  These techniques are very well suited for partially blind signatures, because the schemes we have in anonymous credentials allow for attributes that can be verified by the signer.
 \end{description}
 
-\subsection{Blind signatures with attributes}
+\subsubsection{Blind signatures with attributes}
 \label{rg1:attributes}
 
 The problem is that a blind signature scheme is not necessarily enough.  What we need is a blind signature with attributes (explain why). 
@@ -167,15 +167,15 @@ The problem is that a blind signature scheme is not necessarily enough.  What we
 \item General tools for making anonymous credential schemes concurrently secure.  
 \end{enumerate}
 
-\subsection{Compact tokens}
+\subsubsection{Compact tokens}
 \label{rg1:compact}
 
 
-\subsubsection{Research Goal 2: Systems Design for Private Advertising}
+\subsection{Research Goal 2: Systems Design for Private Advertising}
 
-\subsubsection{Research Goal 3: Scalable Private Advertising}
+\subsection{Research Goal 3: Scalable Private Advertising}
 
-\subsubsection{Preventing sybils with anonymous credentials} 
+\subsection{Preventing sybils with anonymous credentials} 
 %A better approach is when a platform uses anonymous credentials to tell sybils apart from legitimate users.
 %
 Suppose that the platform issues credentials to users who have performed some actions (such as staying on the platform, interacting with it) that increase the platform's trust that these users are humans rather than sybils.  
