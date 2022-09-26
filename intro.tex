@@ -11,27 +11,25 @@ players---seeing revenue upwards of \$140B in 2020 alone~\cite{xxx}.
 %
 
 The ad market involves interaction between four types of mutually distrustful parties:
-\begin{enumerate}
- \item the \textbf{advertiser}, who seeks to show ads to end users who
+(1) the \textbf{advertiser}, who seeks to show ads to end users who
    are likely to engage with them (possibly spending money with the
    advertiser as a result), and who is willing to pay for users to view
    these ads;
  %
- \item the \textbf{publisher}, who operates a website that has an audience
+(2) the \textbf{publisher}, who operates a website that has an audience
    of users to whom advertisers might wish to advertise, and who seeks
    to monetize their content and audience by showing ads;
  %
- \item the \textbf{platform} or ``ad network'', who connects advertisers
+ (3) the \textbf{platform} or ``ad network'', who connects advertisers
    to publishers who have users with the right interest, and takes a cut
    of the publishers' ad revenues; and
  %
- \item the \textbf{end user}, who uses the publisher's website and generates
+ (4) the \textbf{end user}, who uses the publisher's website and generates
    behavioral data (which could be sensitive) used for ad targeting in doing so,
    who sees the platform's chosen advertiser's ads and potentially interacts
    with them.
-\end{enumerate}
-%
-The money here flows from the advertisers to the platform for placing ads with publishers, so that they will ultimately be seen and acted upon by users.
+
+The money flows from the advertisers to the platform for placing ads with publishers, so that they will ultimately be seen and acted upon by users.
 %
 The advertisers don't entirely trust the platforms to bill them correctly and need accounting mechanisms they can rely on and audit.
 %
@@ -49,8 +47,6 @@ who viewed which ad and whether they interacted with it.
 %
 %However, users would prefer to avoid revealing their activity related to ads to the publisher and to the platform.
 
-\medskip
-\noindent
 \textbf{
 Our goal is to realize these mechanisms \emph{without any need for any of these parties to track the users}.} 
 The research objective of this proposal is to design cryptographic protocols and
@@ -62,72 +58,43 @@ ecosystem with much improved privacy for individual users who view and
 interact with online advertisements.
 %
 
-\medskip
-
-\subsection{Privacy desiderata}
-
-In particular, we want to achieve the following privacy guarantees:
-\begin{enumerate}[nosep]
-  \item the end-user is anonymous towards the platform at all times;
-  \item the publisher is anonymous towards the advertiser;
-  \item the advertiser is anonymous towards the publisher;
-  \item neither publisher, nor advertiser or platform find out which \emph{specific} interaction (the combination of user identity, content viewed, and ad shown)
+\paragraph{Privacy desiderata.}
+We would like to ensure that the user is not tracked by any participant; in particular, this means that even though the platform acts as a middleman and shows ads to this user, the platform does not know which user it is serving an ad to, or generally which user it is interacting with.  Publishers and advertisers don't learn anything about the user as a result of interacting with the ad system either; of course they may already know a lot about the user because the publisher often has an established relationship with them (for example, a newspaper may require log-in credentials from its subscribers) and the advertiser may learn the user's identity when the user makes a purchase; we only require that they not learn anything that they don't already know.  Additionally, we don't want the publisher to find out which ad he showed to the user, or the advertisers to find out which publishers sent them their customers --- otherwise they may choose to cut out the platform's services and the market won't work anymore.  Finally, we require that 
+neither publisher, nor advertiser or platform find out which \emph{specific} interaction (the combination of user identity, content viewed, and ad shown)
 	resulted in a conversion; they only learn that a real user, a real ad, and a real conversion event were involved.
-\end{enumerate}
+
+\paragraph{Security and accountability desiderata.}
 %
-However, we do \emph{not} assume anonymity between users and publishers (since users often authenticate to publishers to use their services), or between users and advertisers if a conversion happens (since the conversion involves a purchase, the advertiser finds out the user's identity anyway).
-%
-
-
-%Much of online advertising is \emph{targeted}, meaning that different users
-%see different ads, targeted to their individual interests, as determined
-%from user behavior, browsing history, and demographic information.
-%
-
-
-
-
-
-
-
-
-%\todo{break up this section because it both describes the background and proposed research.}
-
-\subsection{Accountability desiderata: are they at odds with privacy?}
-%
-Advertising involves money changing hands, and thus provides incentives for
-fraud.
+%Advertising involves money changing hands, and thus provides incentives for
+%fraud.
 %
 In the online ad ecosystem's threat model, individual parties seek to maximize
-their own revenue or minimize their costs.
+their own revenue or minimize their costs, and of course there are incentives for fraud.
 %
 Collusion between parties can happen (\eg a publisher may create sybil end
 users), and is common.
 %
 
 %
-The most important challenge is \textbf{click fraud}, which describes the idea
-of creating fake ad impressions and engagements in order to extract revenue from
-an advertiser.
+%The most important challenge is \textbf{click fraud}, which describes the idea
+%of creating fake ad impressions and engagements in order to extract revenue from
+%an advertiser.
 %
-In particular, a publisher gains financially from showing more ads and from
-showing higher-value ads.
+%In particular, a publisher gains financially from showing more ads and from
+%showing higher-value ads.
 %
-Consequently, they might generate fake traffic via sybil users (e.g., ``click
+For example, in the pay-per-click ad revenue model, malicious publishers might generate fake traffic via sybil users (e.g., ``click
 farms''~\cite{understanding-ad-fraud}), or misrepresent the real users' interest
-towards the platform in order to get given more valuable ads in RTB.
+towards the platform in order to get given more valuable ads in RTB.  One popular way to combat click fraud is for the platform to identify users,
+collect their information, and monitor their behavior at scale, so as to be able to tell legitimate users apart from sybils.
 %
-The easiest way to combat click fraud is for the platform to identify users,
-collect their information, and monitor their behavior at scale.
-%
-Knowing more about the user make sybils expensive to create and maintain, but is
+But this user tracking approach is
 of course diametrically opposed to the users' justified desire for online
 privacy.
 %
 Thus, a privacy-preserving ways of preventing sybils is a desirable alternative to this approach.
 
-
-In ad systems that reward a publisher for showing an ad on which the user acts later --- not by clicking the ad when it's shown, but by visiting the advertised site later and doing something meaningful, like making a purchase --- an even more sinister (from the privacy point of view) approach to tracking proliferated.  
+The pay-per-conversion ad revenue model in which a publisher is rewarded only for ads that led end users to do something advertisers value (such as complete a purchase) an even more sinister (from the privacy point of view) approach to tracking proliferated.  
 %
 An ad puts a cookie in the user's browser; when the user later visits a relevant site, it scans all the cookies for those relevant to its ad campaigns, thereby discovering which ad(s) caused the user to visit the site.
 %
@@ -140,9 +107,9 @@ Unless a privacy-friendly way to handle the ad economy can be found, these platf
 
 Finally, in addition to preventing malicious behavior from publishers, such as click fraud, ad ecosystems need to have mechanisms that ensures that advertisers reward publishers and platforms for serving successful ads.  
 
-\subsection{Vision}
+\paragraph{Our vision for reconciling privacy with accountability.}
 %
-In this research, we plan to develop an alternative to today's privacy-invasive
+In this project, we plan to develop an alternative to today's privacy-invasive
 advertising ecosystem.
 %
 \todo{Give a condensed version of the design, explain the role of cryptographic tokens.}
