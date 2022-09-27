@@ -59,9 +59,16 @@ interact with online advertisements.
 %
 
 \paragraph{Privacy desiderata.}
-We would like to ensure that the user is not tracked by any participant; in particular, this means that even though the platform acts as a middleman and shows ads to this user, the platform does not know which user it is serving an ad to, or generally which user it is interacting with.  Publishers and advertisers don't learn anything about the user as a result of interacting with the ad system either; of course they may already know a lot about the user because the publisher often has an established relationship with them (for example, a newspaper may require log-in credentials from its subscribers) and the advertiser may learn the user's identity when the user makes a purchase; we only require that they not learn anything that they don't already know.  Additionally, we don't want the publisher to find out which ad he showed to the user, or the advertisers to find out which publishers sent them their customers --- otherwise they may choose to cut out the platform's services and the market won't work anymore.  Finally, we require that 
-neither publisher, nor advertiser or platform find out which \emph{specific} interaction (the combination of user identity, content viewed, and ad shown)
-	resulted in a conversion; they only learn that a real user, a real ad, and a real conversion event were involved.
+%
+We would like to ensure that the user is not tracked by any participant; in particular, this means that even though the platform acts as a middleman and shows ads to this user, the platform does not know which user it is serving an ad to, or generally which user it is interacting with.
+%
+Publishers and advertisers don't learn anything about the user as a result of interacting with the ad system either; of course they may already know a lot about the user because the publisher often has an established relationship with them (for example, a news website may require log-in credentials from its subscribers) and the advertiser may learn the user's identity when the user makes a purchase; we only require that they not learn anything that they don't already know.
+%
+Additionally, we don't want the publisher to find out which ad the platform showed to the user next to the publisher's content, or the advertisers to find out which publishers sent them their customers---otherwise, they may choose to cut out the platform's services and the market won't work anymore.
+%
+Finally, we require that  neither publisher, nor advertiser or platform find out which \emph{specific} interaction (the combination of user identity, content viewed, and ad shown) results in a \emph{conversion} (a user making a purchase with the advertiser as a result of seeing an ad); they only learn that a real user, a real ad, and a real conversion event were involved.
+%
+
 
 \paragraph{Security and accountability desiderata.}
 %
@@ -83,37 +90,34 @@ users), and is common.
 %In particular, a publisher gains financially from showing more ads and from
 %showing higher-value ads.
 %
-For example, in the pay-per-click ad revenue model, malicious publishers might generate fake traffic via sybil users (e.g., ``click
+In the \emph{pay-per-click} ad revenue model, malicious publishers might generate fake traffic via sybil users (e.g., ``click
 farms''~\cite{understanding-ad-fraud}), or misrepresent the real users' interest
-towards the platform in order to get given more valuable ads in RTB.  One popular way to combat click fraud is for the platform to identify users,
+towards the platform in order to get given more valuable ads.
+%
+One popular way to combat click fraud is for the platform to identify users,
 collect their information, and monitor their behavior at scale, so as to be able to tell legitimate users apart from sybils.
 %
-But this user tracking approach is
-of course diametrically opposed to the users' justified desire for online
+But this user tracking approach is of course diametrically opposed to the users' justified desire for online
 privacy.
 %
-Thus, a privacy-preserving ways of preventing sybils is a desirable alternative to this approach.
+Thus, a privacy-preserving way of preventing sybils is a desirable alternative to this approach.
+%
 
-The pay-per-conversion ad revenue model in which a publisher is rewarded only for ads that led end users to do something advertisers value (such as complete a purchase) an even more sinister (from the privacy point of view) approach to tracking proliferated.  
+%
+The \emph{pay-per-conversion} ad revenue model, in which a publisher is rewarded only for ads that led end users to do something advertisers value (such as complete a purchase), leads to an even more sinister (from the privacy point of view) approach to tracking.
 %
 An ad puts a cookie in the user's browser; when the user later visits a relevant site, it scans all the cookies for those relevant to its ad campaigns, thereby discovering which ad(s) caused the user to visit the site.
 %
-These cookies are so damaging to consumer privacy that a push to remove the support for these so-called ``third-party" cookies has been successful.
-%\footnote{\url{https://www.consumerreports.org/advertising-marketing/internet-advertising-is-about-to-change-third-party-cookies-a6221885875/}}.
+These cookies are so damaging to consumer privacy that a push to remove the support for these so-called ``third-party" cookies has been successful~\cite{consumerreports-3rd-party-cookies}.
 %
 Of course, the beneficiaries of this success are large platforms that do not need cookies to track users' activities, and can therefore benefit from the demise of smaller ad networks.
 %
-Unless a privacy-friendly way to handle the ad economy can be found, these platforms will have an ever greater incentive to track all of our activities.
-
-Finally, in addition to preventing malicious behavior from publishers, such as click fraud, ad ecosystems need to have mechanisms that ensures that advertisers reward publishers and platforms for serving successful ads.  
-
-\paragraph{Our vision for reconciling privacy with accountability.}
+Unless a privacy-friendly way to handle the ad economy can be found, these platforms will have an ever-greater incentive to track user activities.
 %
-In this project, we plan to develop an alternative to today's privacy-invasive
-advertising ecosystem.
-%
-\todo{Give a condensed version of the design, explain the role of cryptographic tokens.}
 
+%
+Finally, in addition to preventing malicious such as click fraud, ad ecosystems need to have mechanisms that ensures that advertisers reward publishers and platforms for serving successful ads.  
+%
 
 \paragraph{Threat model.}
 %
@@ -128,36 +132,74 @@ We assume that the ad platform can attest to the browser's integrity using techn
 When it encounters an unknown browser, the platform treats it as suspicious (\ie it might be a click farm) and refuses to serve ads to it.
 %
 
-Our approach draws on cryptographic tools (\S\ref{s:bg-crypto}) and some minor
-changes to software, particular end-user browsers.
+\paragraph{Our vision for reconciling privacy with accountability.}
+%
+In the proposed research, we will investigate an alternative to today's privacy-invasive
+advertising ecosystem.
+%
+Our design, described in detail in \S\ref{s:design}, centers around a set of cryptographic tokens that different parties in the advertising ecosystem use to prove legitimate interactions to each other.
+%
+For example, an advertiser sees a token when a user clicks on an ad, and validating this token lets the advertiser rest assured that the user visiting them is a legitimate user and not a sybil created by a click farm.
+%
+For unforgeability, these tokens need to be signed; but for privacy, they should avoid carrying identifying information about the party that created or signed them.
+%
+We leverage prior work in the cryptography community on \emph{blind signatures} to achieve this property.
+%
 
-\subsection{Towards Realizing Our Vision}
-We plan to tackle the problem of privacy-first advertising in two broad steps:
-first, we establish the primitives needed to carry out financial accounting in
-the ad ecosystem without requiring privacy-invasive data
-collection (\S\ref{r:fraud}), and then we address the ad matching process and
-hide users' interests and behavior from the other parties in the ecosystem
-(\S\ref{r:matching}).
+%
+Our approach draws on cryptographic tools (\S\ref{s:bg-crypto}) and some minor changes to software, particular end-user browsers.
+%
+We also assume, for simplicity, that the end-user browser is trusted and that the platform has a means of validating that the end-user is running trusted, unmodified browser.
+%
+
+%\subsection{Towards Realizing Our Vision}
+%
+%We plan to tackle the problem of privacy-first advertising in two broad steps.
+%
+%first, we establish the primitives needed to carry out financial accounting in
+%the ad ecosystem without requiring privacy-invasive data
+%collection (\S\ref{r:fraud}), and then we 
+%hide users' interests and behavior from the other parties in the ecosystem
+%(\S\ref{r:matching}).
+%
 
 
 \subsection{Related Work}
 \label{s:bg-related}
+%
+Privacy-preserving advertising has recently seen interest by researchers and industry practitioners.
+%
+However, existing solutions only address some of the privacy goals we seek to meet, or focus on the (equally important, but orthogonal) problem of targeting ads to users in a privacy-preserving manner, \ie without the platform needing to know the user's exact interests.
+%
+We describe key related work in the following; to our knowledge, our design would be the first to achieve strong end-to-end privacy guarantees between all participants (end-user, platform, publisher, and advertiser).
+%
 
 \paragraph{End-user privacy \vs the platform.}
 %
-PrivAd~\cite{privad} introduces an untrusted, anonymizing proxy between the
-client and the platform.
+Perhaps most related to our proposal is PrivAd~\cite{privad}, which introduces
+an untrusted, anonymizing proxy between the end-user client and the platform.
 %
-Has some click fraud detection; mixes requests from different clients for user
-anonymity.
+This ``dealer'' mediates all interactions and mixes requests from different
+end-user clients before a ``broker'' matches ads to the client.
 %
-Good, practical performance, as doesn't need any heavy crypto.
+The responsibility for click fraud detection lies with the broker and PrivAd
+merely blocks clients flagged as suspicious.
+%
+PrivAd achieves high scalability and practical performance, as it only requires
+symmetric-key cryptography and hashing on the critical path.
+%
+Unlike PrivAd, our design avoids the need for a dealer to mediate every
+interaction, is based on blind signatures as a key cryptographic primitive,
+and more closely matches the design and business processes of today's
+ad ecosystem.
 %
 
 %
 ObliviAd~\cite{obliviad} relies on hardware-based private information retrieval
 (PIR) for ad distribution and mixing of billing tokens to establish client
 privacy versus the platform.
+%
+\todo{Malte to describe more}
 %
 
 %
@@ -168,28 +210,65 @@ billing the correct advertisers.
 %
 Green et al.~\cite{adnostic+} improved scale over Adnostic's protocol.
 %
-
-Pri-RTB~\cite{pri-rtb} is a private RTB protocol for a semi-honest setting,
-based on additively homomorphic encryption of user interest profiles.
-%
-It only seeks to hide user identities from advertisers, but trusts the
-auctioneer (the platform) to run the computation correctly.
+\todo{Malte to describe more}
 %
 
 %
-FLoC~\cite{floc} tracks user interests on the client side, and builds cohorts of
-users with similar interests; platform them targets ads to the cohorts rather
+Google's Federated Learning of Cohorts (FLoC)~\cite{google-floc} and related
+proposals~\cite{google-topic-based} track user interests
+on the client side, and builds cohorts of users with similar interests.
+%
+The actual user interests and the browsing history the are inferred from remain
+on the end-user device; the platform only finds out that a user has specific
+interests, not their detailed browsing history.
+%
+The platform then targets ads to cohorts of users with these interests rather
 than individuals.
+%
+Ibex~\cite{ibex} builds on these ideas and further reduces the information the platform
+and advertiser gain.
+%
+Rather than revealing individual user preferences, Ibex has user browsers send
+ciphertexts and computes over them for ad auctions and ad effectiveness tracking,
+revealing only aggregate histograms to the platform and advertisers.
+%
+This work is orthogonal to our proposal: we assume that the platform has a way
+of targeting ads to user interests, and a privacy-preserving way of realizing this
+targeting ads to users would strengthen our design without obviating the need for it.
 %
 
 \paragraph{Publisher/Advertiser trust in the platform.}
+%
+Ad platforms are very powerful, and have incentives to potentially misbehave.
+%
+Some systems address the question of how to increase the publisher's and the advertiser's trust that the platform is behaving honestly, checking \eg that the platform tells the truth about the price that the winning advertiser is willing to pay (rather than artifically inflating this number).
+%
+%
+Pri-RTB~\cite{pri-rtb} is a private real-time-bidding (RTB) protocol for a
+semi-honest setting, based on additively homomorphic encryption of user interest
+profiles.
+%
+It seeks to hide user identities from advertisers, and trusts the
+auctioneer (the platform) to run the computation correctly.
+%
+Our design also assumes that the platform correctly executes the ad matching process,
+adn provides anonymity of end users towards the advertiser, unless they choose to
+reveal themselves through a conversion event.
+%
+However, our design also provides end-user privacy towards the platform, and privacy
+guarantees between the publisher and the advertiser.
+%
 
 %
-Verifiable, private auctions; MPC based ad auction work.
+Based on techniques such as verifiable actions and secure multi-party computation, Addax~\cite{addax} implements a trustworthy, anonymous auction protocol that keeps advertisers anonymous towards the platform while also guaranteeing correct behavior on the platform's part.
+%
+This is complementary to our proposed design: we assume an honest-but-curious platform, but seek to provide anonymity guarantees to end-users and between the publisher and the platform.
+%
+We assume that the platform has a way to match ads to end-users, but stop short of prescribing how this works; Addax's auctions (though expensive) are one possible realization of a privacy-preserving distributed RTB auction that could be fruitfully combined with our work.
+%
 %
 
-\paragraph{Click fraud prevention.}
+%\paragraph{Click fraud prevention.}
 %
-\todo{Add some references}
+%\todo{Add some references}
 %
-
