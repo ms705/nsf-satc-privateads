@@ -121,15 +121,17 @@ Finally, in addition to preventing malicious behavior such as click fraud, ad ec
 
 \paragraph{Threat model.}
 %
-We assume that everyone trusts the platform to be honest-but-curious (\ie faithfully execute our protocol). 
+We assume that publishers and advertisers trust the platform to be honest-but-curious (\ie faithfully execute our protocol). 
+%
+This is a reasonable assumption because both publishers and advertisers have a relationship with the platform, and thus may request access to third-party audits of the platform's business practices before contracting with it.  
 %
 We also assume that the platform trusts the client-side browser software to behave correctly.
 %
-Major ad platforms (\eg Google) in some cases also control browser software; however, since web browsers are open-source software, client-side modification is a possibility.
+Major ad platforms (\eg Google) in some cases also control browser software; however, since web browsers are open-source software, client-side modification is a possibility; but it is unlikely that a large number of end users will opt for it.
 %
-We assume that the ad platform can attest to the browser's integrity using technical means for remote attestation, such as a Trusted Platform Module (TPM).
+In any event, we assume that the ad platform can attest to the browser's integrity using technical means for remote attestation, such as a Trusted Platform Module (TPM).
 %
-When it encounters an unknown browser, the platform treats it as suspicious (\ie it might be a click farm) and refuses to serve ads to it.
+When it encounters an unknown browser, the platform treats it as suspicious (\ie it might be a click farm) and excludes it from the ecosystem.
 %
 
 \paragraph{Our vision for reconciling privacy with accountability.}
@@ -139,11 +141,11 @@ advertising ecosystem.
 %
 Our design, described in detail in \S\ref{s:design}, centers around a set of cryptographic tokens that different parties in the advertising ecosystem use to prove legitimate interactions to each other.
 %
-For example, an advertiser sees a token when a user clicks on an ad, and validating this token lets the advertiser rest assured that the user visiting them is a legitimate user and not a sybil created by a click farm.
+For example, when a user clicks on an ad, their browser sends the advertiser a token.  If this token is valid under the platform's public key the advertiser is assured that the user visiting them is a legitimate user and not a sybil created by a click farm.
 %
 For unforgeability, these tokens need to be signed; but for privacy, they should avoid carrying identifying information about the party that created or signed them.
 %
-We leverage prior work in the cryptography community on \emph{blind signatures} to achieve this property.
+We leverage prior work on cryptographic \emph{blind signatures} to achieve this property.
 %
 
 %
