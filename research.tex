@@ -14,7 +14,13 @@
 \begin{figure}
  \centering
  \includegraphics{figures/overview.pdf}
- \caption{Overview of our privacy-preserving ad economy design.}
+ \caption{Overview of our privacy-preserving ad economy design. The platform pre-seeds the user's device browser (which we trust) with a \emph{user token} (dotted arrow).
+	  The device uses this token to create further
+	  user tokens signed by the platform, based on compact tokens. For each ad impression in which the user visits a publisher's content ({\color{blue}blue}), the
+	  user submits a user token to the platform and receives an ad to display and an \emph{ad impression token} signed by the platform. When the user clicks on an ad
+	  ({\color{OliveGreen}green}) they land on the advertiser's page, and if they spend money (a ``conversion''), they receive a conversion token signed by the advertiser in response. The
+	  user device then exchanges the conversion token for a \emph{IOU token} signed by the platform, which it forwards to the publisher ({\color{Magenta}purple}). Finally, the publisher
+	  redeems the IOU token for payment, which the platform collects from the advertiser by showing the conversion token ({\color{Dandelion}amber}).}
  \label{f:overview}
 \end{figure}
 
