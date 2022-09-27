@@ -214,9 +214,29 @@ Compact e-tokens~\cite{caholy05,chklm06} (co-invented by PI Lysyanskaya) allow a
 \paragraph{Pared down construction that does not require range proofs.} To obtain the credential, the platform and the user run the signing protocol from~\cite{C:CamLys04} on the vector (known to the user) $(m,a,b)$, where $m$ is the user's identity, and $a$ and $b$ are seeds for the Dodis-Yampolskiy PRF $F$; the user obtains the signature $\sigma$.  At time $t$ (down to a second), the user can generate a token that consists of a serial number $A=F_a(t)$, a double-spending value $B = g^m F_b(t)^{H(\mathit{context})}$, and a proof $\pi$ that $A$ and $B$ were computed correctly based on the values $(m,a,b,\sigma)$. If the proof $\pi$ is a UC-secure non-interactive proof in the RO model (such as the one in~\cite{lysros22}), then the resulting scheme is both practical, and (as we will show) UC-secure.
 
 \subsection{Research Goal 2: Systems Design for Private Advertising}
+\label{s:rg2}
 
+%
+Beyond the necessary cryptographic primitives, our proposed design also requires solving the challenge of integrating these primitives into a realistic architecture for online advertising.
+%
+This will require us to pay attention to systems security and deployability concerns, as well as efficiency at scale (which we cover in \S\ref{s:rg3}).
+%
+
+\paragraph{Prototype 0: Proof of Concept With Existing Cryptography}.
 Direct anonymous attestation (not rate limited)
 
+
 \subsection{Research Goal 3: Scalable Private Advertising}
+\label{s:rg3}
+
+%
+Today's ad ecosystems operate at tremendous scale: they serve billions of ad impressions per day, handle millions (or, in the case of large platforms like Meta or Google, billions) of users, and serve millions of advertisers and publishers.
+%
+For a privacy-preserving advertising model to be practical, it must therefore---at least in principle---be deployable at large scale with reasonable costs (in terms of CPU cycles, memory, communication bandwidth, and client-side state required).
+%
+Ad serving is also highly latency-sensitive, since loading ads is often part of the critical path for page load time; ads that show up late will underperform and having long page load times puts off users.
+%
+Therefore, the efficiency of cryptographic operations performed, particularly of those on the critical path to serving an ad to users, becomes paramount.
+%
 
 Efficiency of cryptographic operations on critical path
