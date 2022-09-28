@@ -421,7 +421,7 @@ We may also investigate using a single user token for multiple ad impressions on
 %
 We will also use our second prototype for performance evaluation.
 %
-In particular, we will measure the cost of the cryptographic operations performed (in terms of latency and compute resources used), and relate it to the cost of current, state-of-the-art plaintext ad ecosystem operations (which we cannot hope to beat, but hopefully come close to) and to the cost of previously-proposed privacy-conscious advertising solutions (\S\ref{s:bg-related}).
+We will measure the cost of the cryptographic operations performed (in terms of latency and compute resources used), and relate it to the cost of current, state-of-the-art plaintext ad ecosystem operations (which we cannot hope to beat, but hopefully come close to) and to the cost of previously-proposed privacy-conscious advertising solutions (\S\ref{s:bg-related}).
 %
 
 \subsection{Research Goal 3: Scalable Private Advertising}
@@ -437,4 +437,18 @@ Ad serving is also highly latency-sensitive, since loading ads is often part of 
 Therefore, the efficiency of cryptographic operations performed, particularly of those on the critical path to serving an ad to users, becomes paramount.
 %
 
-Efficiency of cryptographic operations on critical path
+%
+The blind signature schemes we consider (see \S\ref{rg1}) are based on RSA public-private key cryptography or elliptic curve cryptography; specifically, Tessaro and Zhu's schemes~\cite{EC:TesZhu22} rely on elliptic-curve cryptography.
+%
+While efficient for cryptographically-secure schemes, these techniques are still orders of magnitude slower and more compute-intensive than plaintext computation.
+%
+The extra costs of a privacy-preserving ad economy fall partly on the platform (which must sign ad impression tokens and IOU tokens and verify signatures), partly on the advertiser (who must sign conversion tokens and verify signatures), and partly on the client (who must generate user tokens).
+%
+The client-side operations impact page load latency, but some of them can be shifted off the critical path by offline pre-computation: for example, the client browser can keep a set of pre-generated user tokens around to avoid having to generate a user token for each ad impression.
+%
+Advertisers and publishers also need to perform extra work, but unlike the platform, they only deal with their own ad impressions and all their operations can happen offline (\eg the publisher can redeem IOU tokens at any point in time, and the advertiser could delay issuing conversion tokens).
+%
+The aggregate compute load on the platform is more challenging: when doing multiple signature operations per ad impression at a high throughput, the platform may need substantially more compute resources than today.
+%
+We will quantify the overhead and seek to minimize it; ultimately, one outcome of the work will be to understand what the price of a privacy-preserving ad economy is, and whether such an approach could conceivably be regulatorily mandated.
+%
