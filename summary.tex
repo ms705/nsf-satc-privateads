@@ -5,10 +5,13 @@
 %
 Today’s web ecosystem crucially relies on online advertising as a source of revenue for web services that are free to end users.  It consists of many mutually distrustful parties that rely on accountability and auditing mechanisms to ensure that the marketplace is fair.  Our goal is to realize these mechanisms without any need for any of these parties to track the users. 
 
-\paragraph{Intellectual Merit.}
-The research objective of this proposal is to design cryptographic protocols and computer systems that improve data privacy in web advertising.  To do so, we will design provably secure blind signatures and other untraceable cryptographic tokens; and we will develop software systems that incorporate these tokens into an ad ecosystem to ensure accountability in a privacy-preserving fashion.
+Our vision centers around a set of cryptographic tokens that different parties in the advertising ecosystem use to prove legitimate interactions to each other, ensuring accountability.  For example, when a user clicks on an ad, their browser sends the advertiser a token. If this token is valid under the platform’s public key, the advertiser is assured that the user visiting them is a legitimate user and not a sybil created by a click farm.  
 
-\paragraph{Broader Impacts.}
+We propose to use cryptographic blind signatures to realize such tokens in a privacy-preserving way; i.e. such that tokens reveal nothing about the end users.  Our project includes research on both back-end and browser system design that can make such an ad economy highly scalable, requiring only minor changes to software, particular end-user browsers. 
+
+\paragraph{Intellectual Merit.} Our projects will explore a prototype for a privacy-preserving ad economy.  Along the way, we will design and implement efficient and concurrently secure blind signature schemes and their variants, such as partially blind signatures and blind signatures with attributes. We will also design systems that are capable of using them on a tremendous scale, keeping up with today's ad ecosystems. 
+
+\paragraph{Broader Impacts.} Protecting privacy of end users is of paramount importance in today's world.  Even as online ads power the Internet, they pose an enormous threat to our personal privacy.  This project aims to demonstrate that a privacy-preserving ad economy can be realistically achieved.  Additionally, the PIs are committed to education and outreach on this topic, and to serving under-represented groups.
 
 
 \paragraph{Keywords.} Cryptography, Applied; Privacy, Applied; Systems
