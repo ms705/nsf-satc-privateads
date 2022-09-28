@@ -223,17 +223,87 @@ Compact e-tokens~\cite{caholy05,chklm06} (co-invented by PI Lysyanskaya) allow a
 
 \paragraph{Pared down construction that does not require range proofs.} To obtain the credential, the platform and the user run the signing protocol from~\cite{C:CamLys04} on the vector (known to the user) $(m,a,b)$, where $m$ is the user's identity, and $a$ and $b$ are seeds for the Dodis-Yampolskiy PRF $F$; the user obtains the signature $\sigma$.  At time $t$ (down to a second), the user can generate a token that consists of a serial number $A=F_a(t)$, a double-spending value $B = g^m F_b(t)^{H(\mathit{context})}$, and a proof $\pi$ that $A$ and $B$ were computed correctly based on the values $(m,a,b,\sigma)$. If the proof $\pi$ is a UC-secure non-interactive proof in the RO model (such as the one in~\cite{lysros22}), then the resulting scheme is both practical, and (as we will show) UC-secure.
 
-\subsection{Research Goal 2: Systems Design for Private Advertising}
+\subsection{Research Goal 2: Secure System Design for Private Advertising}
 \label{s:rg2}
 
 %
 Beyond the necessary cryptographic primitives, our proposed design also requires solving the challenge of integrating these primitives into a realistic architecture for online advertising.
 %
-This will require us to pay attention to systems security and deployability concerns, as well as efficiency at scale (which we cover in \S\ref{s:rg3}).
+The ad ecosystem includes server-side infrastructure at the platform, the publisher, and the advertiser, and the client devices that interact with these parties.
+%
+A realistic privacy-preserving advertising design requires us to pay attention to systems security and deployability concerns, as well as efficiency at scale (which we cover in \S\ref{s:rg3}).
 %
 
-\paragraph{Prototype 0: Proof of Concept With Existing Cryptography}.
+\paragraph{Challenges.}
+%
+All parties in the advertising ecosystem run their own infrastructure, and since they have potential incentives to cheat, they may leverage their infrastructure (or additional resources) to defraud other parties.
+%
+Our design needs to make such cheating either impossible or easily detectable through auditing.
+%
+Furthermore, our design requires new capabilities in the end-user's device browser: at a minimum, it must store and generate user tokens, store ad impression tokens, and pass ad impression, cconversion, and IOU tokens to their respective recipient parties.
+%
+Finally, our assumption that the client device browser is trustworthy and will correctly execute the protocols requires a mechanism to verify what software the client device is running and that it hasn't been tampered with.
+%
+
+\paragraph{Assumptions.}
+%
+Our threat model assumes that all parties trust the client device and its browser software.
+%
+However, malicious actors may use legitimate browser software to run ``click farms'', automated infrastructure that creates sybil users who perform fake ad interactions, so parties do not trust a client device to represent a real, human user.
+%
+We do assume that the platform acts in an honest-but-curious way, \ie that it correctly executes our protocols and issues user tokens only for legitimate users.
+%
+The publisher and advertiser are not subject to the honest-but-curious assumption: the publisher can only hurt themselves by failing to redeem IOU tokens, and the advertiser's behavior is auditable by the client device (ensuring that conversions are recorded) and by the platform (ensuring that the advertiser cannot dodge paying for conversions).
+%
+
+\subsection{Modifications To Client Browsers}
+%
+
+
+\subsection{Validating Client Software Integrity}
+%
+Our design relies on the platform being able to verify that the client device runs a valid browser that has not been tampered with.
+%
+This ensures that the client cannot lie by omission, such as dropping conversion or IOU tokens: if the client dropped the conversion token, the publisher would never get paid even though a conversion happened; if the client dropped the IOU token, the platform would never have to pay the publisher.
+%
+Validating the browser's code integrity ensures that such omissions cannot happen, but requires a mechanism to attest code running on an untrusted device.
+%
+
+%
+There exist various practical techniques to validate the integrity of client software: attestation via Trusted Platform Modules~\cite{tpm}, remote attestation of software components running in trusted execution environments such as Intel SGX~\cite{sgx}, or signed binaries distributed via trusted app stores~\cite{ios-security}.
+%
+These techniques have been used in prior secure system designs~\cite{riverbed, ryoan}, albeit with different security goals, such as trusting server-side infrastructure under the control of a cloud provider.
+%
+We will investigate these approaches and pick the most appropriate one for our use case.
+%
+We expect that TPM-based attestation might strike a good middle-ground: TPMs are widely available in commodity hardware, are able to certify the integrity of an application executable (as well as a chain of trust back to the UEFI boot loader and hardware, although we doubt this will be required for our use case), and have marginal runtime performance overheads.
+%
+
+%
+Even with an attestation mechanism in place, the platform needs to know what browsers to trust.
+%
+TPM-based and TEE-based attestation mechanisms generally provide a ``quote'' in the form of a cryptographic hash which the receipient is supposed to compare against a list of approved hashes.
+%
+We expect that an advertising platform has sufficient resources to maintain a list of trusted hashes for major browser vendors and recent versions.
+%
+
+%
+However, some aspects might complicate this attestation: browsers rely on many dynamically-linked libraries, use plugins that load extra code at runtime, and are frequently updated.
+%
+The former might complicate getting a reliable attestation quote, and the high frequency of software upgrades might make it challenging for the platform to track a set of ``blessed'' browser versions in practice.
+%
+We will investigate where it possible to attest a smaller section of the browser code, such as a library or plugin that contains the entire infrastructure needed to implement our protocol.
+%
+
+\subsection{End-to-End Prototype}
+%
+
+\paragraph{Prototype 0: Proof of Concept With Existing Cryptography.}
+%
 Direct anonymous attestation (not rate limited)
+
+\paragraph{Prototype 1: Integrating New Cryptographic Primitives.}
+%
 
 
 \subsection{Research Goal 3: Scalable Private Advertising}
