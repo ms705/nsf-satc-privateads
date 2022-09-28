@@ -236,7 +236,7 @@ All parties in the advertising ecosystem run their own infrastructure, and since
 %
 Our design needs to make such cheating either impossible or easily detectable through auditing.
 %
-Furthermore, our design requires new capabilities in the end-user's device browser: at a minimum, it must store and generate user tokens, store ad impression tokens, and pass ad impression, cconversion, and IOU tokens to their respective recipient parties.
+Furthermore, our design requires new capabilities in the end-user's device browser: at a minimum, it must store and generate user tokens, store ad impression tokens, and pass ad impression, conversion, and IOU tokens to their respective recipient parties.
 %
 Finally, our assumption that the client device browser is trustworthy and will correctly execute the protocols requires a mechanism to verify what software the client device is running and that it hasn't been tampered with.
 %
@@ -254,7 +254,7 @@ The publisher and advertiser are not subject to the honest-but-curious assumptio
 Denial of service attacks or external communication failures (\eg a firewall that blocks the browser's messages sending tokens) are out of scope for this work.
 %
 
-\subsection{Modifications to Client Browsers}
+\subsubsection{Modifications to Client Browsers}
 \label{s:browser}
 %
 We assume that client browsers provide two key pieces of new functionality: token storage and initiating new interactions with the platform, advertisers, and publishers.
@@ -284,7 +284,7 @@ It is also important that both user tokens and ad impression tokens are secured 
 %
 A user token in particular is a powerful capability, as it certifies on behalf of the platform that the holder is a non-sybil user and permits deriving new user tokens indefinitely that can be exchanged for ad impression tokens.
 %
-An easy solution to protect user tokens might be to tie them to the identity of the client browser or device hardware; as such, a stolen user token would be useless to the thief unless the steal the physical device.
+An easy solution to protect user tokens might be to tie them to the identity of the client browser or device hardware; as such, a stolen user token would be useless to the thief unless they steal the physical device.
 %
 Ad impression tokens, on the other hand, merely inform the advertiser of an ad impression.
 %
@@ -327,7 +327,7 @@ This requires access to the necessary private/public keys (or other key material
 We believe a standard key infrastructure should be sufficient for this purpose, but we will need to determine how to best integrate this with a commodity browser.
 %
 
-\subsection{Validating Client Software Integrity}
+\subsubsection{Validating Client Software Integrity}
 \label{s:attest}
 %
 Our design relies on the platform being able to verify that the client device runs a valid browser that has not been tampered with.
@@ -361,7 +361,7 @@ The former might complicate getting a reliable attestation quote, and the high f
 We will investigate where it possible to attest a smaller section of the browser code, such as a library or plugin that contains the entire infrastructure needed to implement our protocol.
 %
 
-\subsection{End-to-End Prototype}
+\subsubsection{End-to-End Prototype}
 %
 To validate our design in practice, we will build an end-to-end prototype of the entire ecosystem and benchmark its performance.
 %
@@ -417,7 +417,7 @@ This will entail either implementing them from scratch or extending the initial 
 %
 We plan to use compact tokens to realize user tokens in this prototype.
 %
-This will require us to develop a first implementation of the pared-down construction for compact tokens, and fine-tune the rate limit on these compact tokens.
+This will require us to develop a first implementation of the pared-down construction for compact tokens (Section~\ref{rg1:compact}), and fine-tune the rate limit on these compact tokens.
 %
 Empirical studies of common websites, their load times and the number of ads them will provide some baseline information on what rate of user tokens will be needed to cover realistic use cases.
 %
