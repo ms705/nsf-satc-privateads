@@ -1,7 +1,7 @@
 \section{Research}
 \label{r:stuff}
 
-\subsection{Design overview}
+\subsection{Design Overview}
 \label{s:design}
 %
 %When a user lands on an advertiser's website, the advertiser wants two pieces of information: (1) is this a real human, or a sybil? and (2) which ad was effective at sending this user here?
@@ -29,7 +29,7 @@ We now sketch our privacy-preserving ad ecosystem in which the cryptographic pro
 %
 
 %
-The platform (\eg Google or Meta) has a notion of active, non-sybil users, established \eg by continued engagement on the platform's services and a plausible usage history that is costly to fake.
+The platform has a notion of active, non-sybil users, established, \eg by continued engagement on the platform's services and a plausible usage history that is costly to fake.
 %
 For each such user, the platform issues their devices with a secret that the browser on the user's device uses to derive \emph{user tokens} at a fixed rate.
 %
@@ -37,7 +37,7 @@ These user tokens are signed by the platform and certify that the platform knows
 %
 Each ad displayed to a user consumes such a user token.
 %
-We expect to base the user token generation on existing work on compact tokens (see \S\ref{s:compacttokens}).
+We expect to base the user token generation on existing work on compact tokens by PI Lysyanskaya (see \S\ref{rg1:compact}).
 %
 
 %
@@ -291,23 +291,31 @@ Ad impression tokens, on the other hand, merely inform the advertiser of an ad i
 Stealing somebody's ad impression tokens and sending them to advertisers en-masse does not gain the attacker anything, since the advertiser will \emph{(i)} only issue a conversion token for the single, latest ad impression; and \emph{(ii)} the ultimate payment still goes to the publisher specified in the ad impression token (which is protected by the platform's signature), so an attacker cannot redirect rewards for stolen ad impression tokens to publishers they control.
 %
 
-\paragraph{Detecting Conversions.}
+\paragraph{Tracking Clicks and Conversions.}
 %
-One critical role of the client browser in our design is to hold advertisers accountable to report conversions accurately.
+One critical role of the client browser in our design is to hold advertisers accountable to report events that require payment (\ie conversions).
 %
 An advertiser who fails to issue a conversion token for a conversion that was actually occasioned by an ad impression would manage to cheat their way out of paying, so it is essential that the client browser be able to detect a conversion and ensure that the advertiser provides a conversion token with it.
 %
-We are not completely sure how to achieve this yet, particularly since conversions could take different forms (\eg a purchase, a subscription to a new service, or consumption of additional content).
+Conversions could take different forms, such as a purchase, a subscription to a new service, consumption of additional content, or just a click on an ad; the specifics depend on the business model of the ad platform.
 %
-However, one promising approach might be to tie the notion of a conversion to existing browser functionality for payment processing, such as auto-filling credit card details.
+We will develop a set of privacy-preserving tools that cover different models.
 %
-If the browser detects such a payment-processing page and receives no conversion token even though it has an ad impression token for the advertiser's site, it would notify the platform of potential foul play; a sufficient critical mass of reports would then cause the platform to investigate the advertiser's behavior.
+For instance, one might be to tie the notion of a conversion to existing browser functionality for payment processing, such as auto-filling credit card details, and have the browser report the lack of a conversion token if the advertiser fails to issue one.
 %
-The weakness of this solution is that it fails to capture other payment methods or purchases using details already saved in the advertiser's systems.
+%If the browser detects such a payment-processing page and receives no conversion token even though it has an ad impression token for the advertiser's site, it would notify the platform of potential foul play; a sufficient critical mass of reports would then cause the platform to investigate the advertiser's behavior.
 %
-An alternative approach might be to have the advertiser integrate platform-provided code into pages involved in conversions and have the platform release (\ie auto-fill) user details with user consert in exchange for the advertiser providing a conversion token.
+%The weakness of this solution is that it fails to capture other payment methods or purchases using details already saved in the advertiser's systems.
 %
-(Yet another alternative would be to track ad clicks instead of conversions, but this would require the client device to report the ad clicks to the platform, which weakens user anonymity; a solution to this problem might lie in sending blindly-signed ad click information to the platform. If metadata privacy is desired, these click reports could flow through a mixnet that hides the user's identity further~\cite{vuvuzela,tor}.)
+%An alternative approach might be to have the advertiser integrate platform-provided code into pages involved in conversions and have the platform release (\ie auto-fill) user details with user consert in exchange for the advertiser providing a conversion token.
+%
+Alternatively, the business model might require tracking ad clicks.
+%
+This requires the client device to report the ad clicks to the platform, which weakens user anonymity.
+%
+A solution to this problem might lie in sending blindly-signed ad click information to the platform, possibly through these a mixnet that hides the user's identity further if metadata privacy is desired~\cite{vuvuzela,tor}.)
+%
+Finally, the platform and the advertiser could have a contractual relationship that requires the advertiser to issue conversion tokens on specific events, and use an out-of-band auditing mechanism to ensure this is done correctly.
 %
 
 \paragraph{Public Key Infrastructure for Signature Verification.}

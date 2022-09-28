@@ -148,7 +148,7 @@ We leverage prior work on cryptographic \emph{blind signatures} to achieve this 
 %
 
 %
-Our approach draws on cryptographic tools (\S\ref{s:bg-crypto}) and some minor changes to software, particular end-user browsers.
+Our approach draws on cryptographic tools and some minor changes to software, particular end-user browsers.
 %
 We also assume, for simplicity, that the end-user browser is trusted and that the platform has a means of validating that the end-user is running trusted, unmodified browser.
 %
@@ -200,23 +200,23 @@ ObliviAd~\cite{obliviad} relies on hardware-based private information retrieval
 (PIR) for ad distribution and mixing of billing tokens to establish client
 privacy versus the platform.
 %
-\todo{Malte to describe more}
+PIR is a very expensive technique that is hard to scale; our work instead relies
+on blind signatures, which can be implemented much more efficiently.
 %
 
 %
-Adnostic~\cite{adnostic} (Boneh et al.) proposes a browser-based user profiling
+Adnostic~\cite{adnostic} proposes a browser-based user profiling
 solution that moves the ad targeting into the user's browser and hides the
 specific ad choice from the platform, but provides a cryptographic protocol for
 billing the correct advertisers.
 %
 Green et al.~\cite{adnostic+} improved scale over Adnostic's protocol.
 %
-\todo{Malte to describe more}
+These techniques are complementary to our design, and could help us hide the
+ad chosen from the platform.
 %
-
-%
-Google's Federated Learning of Cohorts (FLoC)~\cite{google-floc} and related
-proposals~\cite{google-topic-based} track user interests
+Likewise, Google's Federated Learning of Cohorts (FLoC)~\cite{google-floc} and
+related proposals~\cite{google-topic-based} track user interests
 on the client side, and builds cohorts of users with similar interests.
 %
 The actual user interests and the browsing history the are inferred from remain
@@ -235,15 +235,10 @@ revealing only aggregate histograms to the platform and advertisers.
 %
 This work is orthogonal to our proposal: we assume that the platform has a way
 of targeting ads to user interests, and a privacy-preserving way of realizing this
-targeting ads to users would strengthen our design without obviating the need for it.
+targeting of ads to users would strengthen our design without obviating the need for it.
 %
 
-\paragraph{Publisher/Advertiser trust in the platform.}
-%
-Ad platforms are very powerful, and have incentives to potentially misbehave.
-%
-Some systems address the question of how to increase the publisher's and the advertiser's trust that the platform is behaving honestly, checking \eg that the platform tells the truth about the price that the winning advertiser is willing to pay (rather than artifically inflating this number).
-%
+\paragraph{Trust in the platform and advertisers.}
 %
 Pri-RTB~\cite{pri-rtb} is a private real-time-bidding (RTB) protocol for a
 semi-honest setting, based on additively homomorphic encryption of user interest
@@ -253,13 +248,19 @@ It seeks to hide user identities from advertisers, and trusts the
 auctioneer (the platform) to run the computation correctly.
 %
 Our design also assumes that the platform correctly executes the ad matching process,
-adn provides anonymity of end users towards the advertiser, unless they choose to
+and provides anonymity of end users towards the advertiser, unless they choose to
 reveal themselves through a conversion event.
 %
-However, our design also provides end-user privacy towards the platform, and privacy
+%
+In addition, our design also provides end-user privacy towards the platform, and privacy
 guarantees between the publisher and the advertiser.
 %
-
+However, ad platforms are very powerful, and have incentives to potentially misbehave.
+%
+Some systems address the question of how to increase the publisher's and the advertiser's
+trust that the platform is behaving honestly, checking, \eg that the platform tells the
+truth about the price that the winning advertiser is willing to pay (rather than artifically
+inflating this number).
 %
 Based on techniques such as verifiable actions and secure multi-party computation, Addax~\cite{addax} implements a trustworthy, anonymous auction protocol that keeps advertisers anonymous towards the platform while also guaranteeing correct behavior on the platform's part.
 %
