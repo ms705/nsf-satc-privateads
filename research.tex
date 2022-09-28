@@ -295,16 +295,31 @@ Stealing somebody's ad impression tokens and sending them to advertisers en-mass
 
 \paragraph{Detecting Conversions.}
 %
-Must hold advertisers accountable!
+One critical role of the client browser in our design is to hold advertisers accountable to report conversions accurately.
 %
-Tie to credit card functionality/purchasing APIs in browser?
+An advertiser who fails to issue a conversion token for a conversion that was actually occasioned by an ad impression would manage to cheat their way out of paying, so it is essential that the client browser be able to detect a conversion and ensure that the advertiser provides a conversion token with it.
+%
+We are not completely sure how to achieve this yet, particularly since conversions could take different forms (\eg a purchase, a subscription to a new service, or consumption of additional content).
+%
+However, one promising approach might be to tie the notion of a conversion to existing browser functionality for payment processing, such as auto-filling credit card details.
+%
+If the browser detects such a payment-processing page and receives no conversion token even though it has an ad impression token for the advertiser's site, it would notify the platform of potential foul play; a sufficient critical mass of reports would then cause the platform to investigate the advertiser's behavior.
+%
+The weakness of this solution is that it fails to capture other payment methods or purchases using details already saved in the advertiser's systems.
+%
+An alternative approach might be to have the advertiser integrate platform-provided code into pages involved in conversions and have the platform release (\ie auto-fill) user details with user consert in exchange for the advertiser providing a conversion token.
+%
+(Yet another alternative would be to track ad clicks instead of conversions, but this would require the client device to report the ad clicks to the platform, which weakens user anonymity; a solution to this problem might lie in sending blindly-signed ad click information to the platform. If metadata privacy is desired, these click reports could flow through a mixnet that hides the user's identity further~\cite{vuvuzela,tor}.)
 %
 
 \paragraph{Public Key Infrastructure for Signature Verification.}
 %
-Browser needs to be able to get the necessary keys to sign/verify blind sigs.
+The client device browser and other entities in our end-to-end system design must be able to create signed content and verify blind signatures.
 %
-
+This requires access to the necessary private/public keys (or other key material) to create or verify blind signatures.
+%
+We believe a standard key infrastructure should be sufficient for this purpose, but we will need to determine how to best integrate this with a commodity browser.
+%
 
 \subsection{Validating Client Software Integrity}
 \label{s:attest}
@@ -394,7 +409,19 @@ This will entail either implementing them from scratch or extending the initial 
 %
 
 %
-We plan to use compact tokens to realize user tokens in this prototype, 
+We plan to use compact tokens to realize user tokens in this prototype.
+%
+This will require us to develop a first implementation of the pared-down construction for compact tokens, and fine-tune the rate limit on these compact tokens.
+%
+Empirical studies of common websites, their load times and the number of ads them will provide some baseline information on what rate of user tokens will be needed to cover realistic use cases.
+%
+We may also investigate using a single user token for multiple ad impressions on the same site---a task made more difficult by the fact that a single page might well embed ads from many multiple publishers.
+%
+
+%
+We will also use our second prototype for performance evaluation.
+%
+In particular, we will measure the cost of the cryptographic operations performed (in terms of latency and compute resources used), and relate it to the cost of current, state-of-the-art plaintext ad ecosystem operations (which we cannot hope to beat, but hopefully come close to) and to the cost of previously-proposed privacy-conscious advertising solutions (\S\ref{s:bg-related}).
 %
 
 \subsection{Research Goal 3: Scalable Private Advertising}
