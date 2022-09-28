@@ -159,8 +159,6 @@ Currently known compilers are based on the user revealing most of his randomness
 %The chances that he sent badly formed messages and was not caught is $1/n$.  But what if we use aggregation somehow, so that he reveals one half of what he is doing, and yet only succeeds in obtaining a signature at the end if he cheats in all of the remaining (unchecked) sessions? Then we obtain a compiler for converting a standalone blind signature into a concurrently secure one.  
 %\end{description}
 
-\paragraph{Software implementations.} Even as we pursue the (more theoretical) directions outlined above, for the purposes of building an initial version of the system as described at the beginning of Section~\ref{r:stuff}, we need to pick an existing blind signature scheme and implement it. The schemes due to Tessaro and Zhu~\cite{EC:TesZhu22} are an attractive choice because they can be efficiently implemented in (standard, pairing-free) elliptic-curve groups, and because they also give an efficient partially blind signature.  \todo{does this stay here or move to a systems section?}
-
 
 \subsubsection{Partially blind signatures}
 \label{rg1:partially}
@@ -255,12 +253,61 @@ We do assume that the platform acts in an honest-but-curious way, \ie that it co
 %
 The publisher and advertiser are not subject to the honest-but-curious assumption: the publisher can only hurt themselves by failing to redeem IOU tokens, and the advertiser's behavior is auditable by the client device (ensuring that conversions are recorded) and by the platform (ensuring that the advertiser cannot dodge paying for conversions).
 %
+Denial of service attacks or external communication failures (\eg a firewall that blocks the browser's messages sending tokens) are out of scope for this work.
+%
 
-\subsection{Modifications To Client Browsers}
+\subsection{Modifications to Client Browsers}
+\label{s:browser}
+%
+We assume that client browsers provide two key pieces of new functionality: token storage and initiating new interactions with the platform, advertisers, and publishers.
+%
+In principle, these are simple additions of functionality, but there are some challenges to realizing them correctly and efficiently.
+%
+
+\paragraph{Token Storage and Security.}
+%
+The client browser must store and generate user tokens, and must hold on to information about ad impressions, in the form of ad impression tokens or otherwise, so that it can later match a conversion to a prior ad impression.
+%
+This matching is needed in order to check that the advertiser is not lying about which ad (and thus, publisher) the conversion relates to.
+%
+Other tokens, such as conversion tokens and IOU tokens, only pass through the browser and need not be stored.
+%
+
+%
+We believe that an approach that leverages existing per-domain state in browsers---such as cookies and local storage---should work well here.
+%
+However, we must consider the duration of token storage, their space footprint, and how to keep the tokens secure and limit the impact of them leaking.
+%
+Fortunately, the time between ad impressions and conversions is usually fairly limited: holding on to tokens for a few days should be sufficient to capture even most delayed conversions.
+%
+The number of ad impression tokens per site might, however, grow large (hundreds or thousands), so we will need to find efficient ways of storing them.
+%
+It is also important that both user tokens and ad impression tokens are secured against accidental leakage or active theft.
+%
+A user token in particular is a powerful capability, as it certifies on behalf of the platform that the holder is a non-sybil user and permits deriving new user tokens indefinitely that can be exchanged for ad impression tokens.
+%
+An easy solution to protect user tokens might be to tie them to the identity of the client browser or device hardware; as such, a stolen user token would be useless to the thief unless the steal the physical device.
+%
+Ad impression tokens, on the other hand, merely inform the advertiser of an ad impression.
+%
+Stealing somebody's ad impression tokens and sending them to advertisers en-masse does not gain the attacker anything, since the advertiser will \emph{(i)} only issue a conversion token for the single, latest ad impression; and \emph{(ii)} the ultimate payment still goes to the publisher specified in the ad impression token (which is protected by the platform's signature), so an attacker cannot redirect rewards for stolen ad impression tokens to publishers they control.
+%
+
+\paragraph{Detecting Conversions.}
+%
+Must hold advertisers accountable!
+%
+Tie to credit card functionality/purchasing APIs in browser?
+%
+
+\paragraph{Public Key Infrastructure for Signature Verification.}
+%
+Browser needs to be able to get the necessary keys to sign/verify blind sigs.
 %
 
 
 \subsection{Validating Client Software Integrity}
+\label{s:attest}
 %
 Our design relies on the platform being able to verify that the client device runs a valid browser that has not been tampered with.
 %
@@ -286,8 +333,6 @@ TPM-based and TEE-based attestation mechanisms generally provide a ``quote'' in 
 %
 We expect that an advertising platform has sufficient resources to maintain a list of trusted hashes for major browser vendors and recent versions.
 %
-
-%
 However, some aspects might complicate this attestation: browsers rely on many dynamically-linked libraries, use plugins that load extra code at runtime, and are frequently updated.
 %
 The former might complicate getting a reliable attestation quote, and the high frequency of software upgrades might make it challenging for the platform to track a set of ``blessed'' browser versions in practice.
@@ -297,14 +342,60 @@ We will investigate where it possible to attest a smaller section of the browser
 
 \subsection{End-to-End Prototype}
 %
+To validate our design in practice, we will build an end-to-end prototype of the entire ecosystem and benchmark its performance.
+%
+This entails building the platform's server-side infrastructure for issuing user tokens and ad impression tokens, for handling conversion tokens, and for issuing and handling IOU tokens.
+%
+We will build our own prototypical ad serving backend and extend it with the necessary cryptographic routines to support these interactions.
+%
+On the advertiser side, we need to at least support the necessary signature verifications and issusing conversion tokens; the publisher infrastructure needs to handle and forward IOU tokens to the platform.
+%
+We expect that realizing simple implementations of these service-side pieces will be straightforward, but that building high-performance, concurrent implementations for testing the performance and scalability of our approach under realistic conditions will be challenging.
+%
+In addition, we will need to provide the client-side functionality described in \S\ref{s:browser} and \S\ref{s:attest}.
+%
+
+%
+We plan to break this work down into two prototypes: a first one to validate the overall approach, and a second one to integrate new cryptographic primitives and evaluate performance.
+%
 
 \paragraph{Prototype 0: Proof of Concept With Existing Cryptography.}
 %
-Direct anonymous attestation (not rate limited)
+As we pursue the (more theoretical) directions outlined in \S\ref{rg1}, for the purposes of building an initial proof-of-concept prototype of the end-to-end system design, we need to pick an existing blind signature scheme and implement it.
+%
+The schemes due to Tessaro and Zhu~\cite{EC:TesZhu22} are an attractive choice because they can be efficiently implemented in (standard, pairing-free) elliptic-curve groups, and because they also give an efficient partially blind signature.
+%
+This is sufficient for a proof-of-concept implementation of signed ad impression, conversion, and IOU tokens, albeit without hidden attributes.
+%
+As a consequence, this scheme either needs to reveal the publisher's identity to the advertiser or cannot ensure that the conversion token from the advertiser actually matches the publisher in the ad impression token (and thus an advertiser could switch the publisher in the conversion token and avoid paying).
+%
+We will implement the Tessaro--Zhu schemes in standalone form and within a commodity browser, and build upon this implementation for our second prototype if we can extend the Tessaro--Zhu scheme to hidden attributes.
+%
+
+%
+For user tokens, we plan to use direct anonymous attestation~\cite{direct-anon-attest} (DAA) for the initial prototype.
+%
+Direct anonymous attestation relies on a local private key (in the user's browser or a hardware TPM in their machine) and a third-party certificate authority (CA) to attest to the user's identity, tying it back to the user token issued by the platform.
+%
+Unlike compact tokens, DAA is not rate-limited, so it suffers the problem that a compromised device can generate fake ad impressions at a high rate.
+%
+In practice, a platform can use standard mechanisms to detect such implausibly-rapid requests for ad impression tokens, but compact tokens---provided we can come up with a concurrently-secure construction---retain the advantage of not requiring a third-party CA.
+%
+
+%
+This initial prototype serves to validate the overall design, without achieving provable security, since the underlying protocols are only secure in the sequential model.
+%
 
 \paragraph{Prototype 1: Integrating New Cryptographic Primitives.}
 %
+In our second prototype, we will integrate new cryptographic primitives developed as part of this project and evaluate their performance under realistic conditions.
+%
+This will entail either implementing them from scratch or extending the initial implementations as needed, and developing both microbenchmarks and end-to-end evaluation scenarios.
+%
 
+%
+We plan to use compact tokens to realize user tokens in this prototype, 
+%
 
 \subsection{Research Goal 3: Scalable Private Advertising}
 \label{s:rg3}
