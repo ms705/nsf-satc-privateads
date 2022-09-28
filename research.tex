@@ -53,7 +53,7 @@ This \emph{ad impression token} consists of a blind signature with attributes $(
 %
 Here, the platform is the signer and the user is the recipient in the blind signature protocol.
 %
-The identity of the publisher is a \emph{hidden} attribute, which is important to uphold the publisher's anonymity in the user's following potential interaction with the advertiser.
+The identity of the publisher is a \emph{hidden} attribute, so that if and when the user sends this token to advertiser, the advertiser doesn't learn who the publisher is.% which is important to uphold the publisher's anonymity in the user's following potential interaction with the advertiser.
 %
 
 %
@@ -95,13 +95,11 @@ The IOU token is a signed statement that the platform has verified the conversio
 %
 The IOU token constitutes an obligation for the platform to pay $P$ if presented with the token by $P$.
 %
-The end-user client browser, which locally remembers the ad impression and publisher, sends the IOU token to $P$, who can later redeem it with the platform for payment.
+The client browser, which locally remembers the ad impression and publisher, sends the IOU token to $P$, who can later redeem it with the platform for payment.
 %
-When the platform receives the IOU token from a publisher, it verifies its own signature on it, charges the advertiser.
+When the platform receives the IOU token from a publisher, it verifies its own signature on it, and charges the advertiser $A$ by presenting the conversion token signed by $A$.
 %
-To charge the advertiser ($A$), the platform presents the conversion token signed by $A$, and $A$ verifies its signature on it.
-%
-$A$ pays the platform, which takes its cut, and finally rewards the publisher.
+Upon verifying its signature on the token, $A$ pays the platform, which takes its cut, and finally rewards the publisher.
 %
 
 %
